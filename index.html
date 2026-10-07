@@ -179,24 +179,6 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .flip .back{background:linear-gradient(160deg,rgba(232,176,122,.95),rgba(207,138,98,.95));color:#1d130c;transform:rotateY(180deg);font-family:var(--serif);font-size:16.5px;line-height:1.3}
 .flip .back b{display:block;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;opacity:.75}
 
-/* QUIZ */
-.quiz{min-height:280px}
-.q-prog{display:flex;gap:5px;margin-bottom:14px}
-.q-prog i{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.12)}
-.q-prog i.on{background:var(--accent)}
-.q-step{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.q-q{font-family:var(--serif);font-size:24px;line-height:1.25;margin:4px 0 14px}
-.q-opts{display:grid;gap:10px}
-.q-opt{width:100%;text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
-.q-opt:active{transform:scale(.98)}
-.q-opt.picked{border-color:var(--accent);background:rgba(232,176,122,.14)}
-.q-react{min-height:1.6em;margin-top:12px;color:var(--accent);font-family:var(--serif);font-size:18px}
-.q-anim{animation:pop .35s ease}
-.q-result{text-align:center}
-.q-score{font-family:var(--serif);font-size:78px;line-height:1;color:var(--accent);text-shadow:0 0 34px rgba(232,176,122,.45)}
-.q-score small{font-size:36px}
-.q-line{font-family:var(--serif);font-size:21px;margin:10px 0 16px}
-
 /* DATE PICKER */
 .dates{display:grid;gap:10px}
 .date{display:flex;gap:14px;align-items:center;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;transition:border-color .2s,transform .15s,background .2s}
@@ -288,7 +270,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .tot-react .adv-txt{line-height:1.35}
 .tot-react.hit .adv-txt::before{content:"✓ ";content:"✓ " / "Match: ";color:#5fd39a;font:700 17px var(--sans)}
 .tot-react.miss .adv-txt::before{content:"✗ ";content:"✗ " / "Not my pick: ";color:var(--muted);font:700 17px var(--sans)}
-/* reply + countdown + Next (quiz & This or that) */
+/* reply + countdown + Next (This or that) */
 .adv-on{cursor:pointer}
 .adv-txt{display:block}
 .adv-row{display:flex;align-items:center;gap:10px;margin-top:8px}
@@ -381,7 +363,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   .reveal{transform:none;transition:opacity .3s}
   .flip .in{transition:none}
   #intro .it{animation-duration:.01s}
-  .ttl-res,.q-anim{animation:none}
+  .ttl-res{animation:none}
   .msg,.egg.open,.egg-star,.hi-btn.playing .ic,.tot-res{animation:none}
   .tot-card{transition:opacity .2s}
   .adv-bar{display:none}
@@ -409,7 +391,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   <div class="hero-text">
     <div class="kicker">Hey, you scanned my card 👋</div>
     <h1>Dominic</h1>
-    <div class="hero-sub">Melbourne, FL · Supply Chain Logistics</div>
+    <div class="hero-sub">Supply Chain Logistics</div>
   </div>
 </header>
 
@@ -427,34 +409,6 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
       <h3>Looking for</h3>
       <div class="big">Long-term, open to short</div>
       <div class="chips" style="margin-top:6px"><span class="chip hl">Monogamy</span><span class="chip">Straight</span><span class="chip">English</span></div>
-    </div>
-  </section>
-
-  <!-- ===================== ABOUT ===================== -->
-  <section class="reveal">
-    <h2>About me</h2>
-    <div class="card">
-      <p class="lead">Independent. I <em>have</em> energy.</p>
-      <p class="muted">I'm better in person, so let's grab a coffee.</p>
-
-      <h3>Amateur specialist in</h3>
-      <ul class="clean">
-        <li><b>🐾</b>Training dogs and cats</li>
-        <li><b>👶</b>Caring for babies</li>
-        <li><b>😴</b>Improving sleep quality</li>
-      </ul>
-
-      <h3>What I want in a wife</h3>
-      <div class="chips">
-        <span class="chip hl">Loyalty</span><span class="chip hl">Energy</span><span class="chip hl">Curiosity</span>
-        <span class="chip hl">An INTJ match</span><span class="chip hl">Intellectually stimulating</span>
-      </div>
-
-      <h3>We'll click if you</h3>
-      <div class="chips" id="click-if"><span class="chip">Talk things through</span><span class="chip">Love a real conversation</span><span class="chip">Laugh easily</span></div>
-
-      <h3>Bonus points if you're</h3>
-      <div class="chips"><span class="chip">Into longevity</span><span class="chip">A nurse</span><span class="chip">A teacher</span><span class="chip">A vet</span><span class="chip">An early-to-bed type</span></div>
     </div>
   </section>
 
@@ -503,8 +457,115 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     </div>
   </section>
 
-  <!-- ===================== PROMPTS ===================== -->
-  <section class="reveal">
+  <!-- ===================== THIS OR THAT (rounds live in THIS_OR_THAT in the script) ===================== -->
+  <section class="reveal" id="this-or-that">
+    <h2>This or that <span class="n">Swipe it</span></h2>
+    <p class="sub">Quick gut calls. Let's see how many line up with mine.</p>
+    <div class="card tot" id="tot" aria-live="polite">
+      <noscript><p class="muted">This game needs JavaScript.</p></noscript>
+    </div>
+  </section>
+
+  <!-- ===================== FIRST DATE PICKER ===================== -->
+  <section class="reveal" id="dates">
+    <h2>Pick our first date</h2>
+    <p class="sub">Tap one and it goes straight to my texts.</p>
+    <div class="dates" id="date-list"></div>
+  </section>
+
+  <!-- ===================== SPACE COAST MAP (spots live in MAP_SPOTS in the script) ===================== -->
+  <section class="reveal" id="map-sec">
+    <h2>Space Coast date map</h2>
+    <p class="sub">A few spots on the Space Coast.</p>
+    <div class="card map-card">
+      <div class="map-wrap">
+        <div id="map" role="region" aria-label="Map of first-date spots on the Space Coast, Florida"></div>
+        <button class="map-lock" type="button" id="map-lock" aria-pressed="false" hidden>👆 Tap to move map</button>
+      </div>
+      <p class="map-hint" id="map-hint">Pinch to zoom · tap a pin for the date idea</p>
+      <ol class="spots" id="spot-list"></ol>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section class="reveal" id="about">
+    <h2>About me</h2>
+    <div class="card">
+      <p class="lead">Independent. I <em>have</em> energy.</p>
+      <p class="muted">I'm better in person, so let's grab a coffee.</p>
+
+      <h3>Amateur specialist in</h3>
+      <ul class="clean">
+        <li><b>🐾</b>Training dogs and cats</li>
+        <li><b>👶</b>Caring for babies</li>
+        <li><b>😴</b>Improving sleep quality</li>
+      </ul>
+
+      <h3>What I value</h3>
+      <div class="chips">
+        <span class="chip hl">Loyalty</span><span class="chip hl">Energy</span><span class="chip hl">Curiosity</span>
+        <span class="chip hl">An INTJ match</span><span class="chip hl">Intellectually stimulating</span>
+      </div>
+
+      <h3>We'll click if you</h3>
+      <div class="chips" id="click-if"><span class="chip">Talk things through</span><span class="chip">Love a real conversation</span><span class="chip">Laugh easily</span></div>
+
+      <h3>Bonus points if you're</h3>
+      <div class="chips"><span class="chip">Into longevity</span><span class="chip">A nurse</span><span class="chip">A teacher</span><span class="chip">A vet</span><span class="chip">An early-to-bed type</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== VITALS + LIFESTYLE ===================== -->
+  <section class="reveal" id="basics">
+    <h2>The basics</h2>
+    <div class="card">
+      <h3>Vitals</h3>
+      <div class="two">
+        <div class="stat"><small>Family plans</small><span>Wants children</span></div>
+        <div class="stat"><small>Love style</small><span>Time together</span></div>
+        <div class="stat" id="reach-me" style="grid-column:span 2"><small>Best way to reach me</small><span>Call me, beep me, if you wanna reach me 📟 …but really, just <a class="reach-sms" id="reach-sms" href="sms:+18172179760?&amp;body=Hey%20Dominic!%20We%20met%20and%20I%20scanned%20your%20card%20%F0%9F%99%82">text me</a>.</span></div>
+      </div>
+      <h3>Lifestyle</h3>
+      <div class="two">
+        <div class="stat"><small>Drinking</small><span>Socially, on weekends</span></div>
+        <div class="stat"><small>Smoking</small><span>Non-smoker</span></div>
+        <div class="stat"><small>Cannabis</small><span>Never</span></div>
+        <div class="stat"><small>Social media</small><span>Passive scroller</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== INTERESTS ===================== -->
+  <section class="reveal" id="into">
+    <h2>Into</h2>
+    <div class="chips">
+      <span class="chip">Pro-Choice</span><span class="chip">Climate Change</span><span class="chip">Feminism</span>
+      <span class="chip">Tattoos</span><span class="chip">Self Love</span><span class="chip">Harry Potter</span>
+      <span class="chip">Marvel</span><span class="chip">Foodie</span><span class="chip">Thrifting</span><span class="chip">Trying New Things</span>
+    </div>
+  </section>
+
+  <!-- ===================== GOING OUT / WEEKENDS ===================== -->
+  <section class="reveal" id="out-about">
+    <h2>Out &amp; about</h2>
+    <div class="card">
+      <h3>Going out</h3>
+      <ul class="clean">
+        <li><b>🥂</b>You can find me socializing</li>
+        <li><b>👕</b>I like to dress down</li>
+        <li><b>👋</b>Exit strategy: I'll just say bye.</li>
+      </ul>
+      <h3>Weekends</h3>
+      <ul class="clean">
+        <li><b>🔋</b>For recharging</li>
+        <li><b>🛋️</b>Saturday night: cozy nights in</li>
+        <li><b>🧖</b>Sunday: self-care</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== PROMPTS + TWO TRUTHS ===================== -->
+  <section class="reveal" id="prompts">
     <h2>A few prompts</h2>
     <div class="prompt">
       <div class="q">The hottest thing you can do is…</div>
@@ -527,6 +588,30 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <button class="linkbtn" type="button" id="ttl-reset">Change my guess</button>
       </div>
       <div class="hint" id="ttl-hint">No spoilers here. Take your best guess.</div>
+    </div>
+  </section>
+
+  <!-- ===================== GREEN FLAGS / RED FLAGS ===================== -->
+  <section class="reveal" id="flags">
+    <h2>Green flags, red flags</h2>
+    <p class="sub">A completely honest self-roast.</p>
+    <div class="flags">
+      <div class="card green">
+        <h3>🟢 Green flags</h3>
+        <ul class="clean" id="green-flags">
+          <li><b>✅</b>I plan dates, not just "wyd"</li>
+          <li><b>✅</b>Replies quickly</li>
+          <li><b>✅</b>Phone always fully charged</li>
+        </ul>
+      </div>
+      <div class="card red">
+        <h3>🚩 Red flags</h3>
+        <ul class="clean" id="red-flags">
+          <li><b>🚩</b>I will pet your dog before I say hi to you</li>
+          <li><b>🚩</b>I will steal one of your tacos</li>
+          <li><b>🚩</b>Slytherin</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -555,97 +640,6 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     </div>
   </section>
 
-  <!-- ===================== GREEN FLAGS / RED FLAGS ===================== -->
-  <section class="reveal" id="flags">
-    <h2>Green flags, red flags</h2>
-    <p class="sub">A completely honest self-roast.</p>
-    <div class="flags">
-      <div class="card green">
-        <h3>🟢 Green flags</h3>
-        <ul class="clean" id="green-flags">
-          <li><b>✅</b>I plan dates, not just "wyd"</li>
-          <li><b>✅</b>Replies quickly</li>
-          <li><b>✅</b>Phone always fully charged</li>
-        </ul>
-      </div>
-      <div class="card red">
-        <h3>🚩 Red flags</h3>
-        <ul class="clean" id="red-flags">
-          <li><b>🚩</b>I will pet your dog before I say hi to you</li>
-          <li><b>🚩</b>I will steal one of your tacos</li>
-          <li><b>🚩</b>Slytherin</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== COMPATIBILITY QUIZ ===================== -->
-  <section class="reveal" id="quiz-sec">
-    <h2>Are we compatible?</h2>
-    <p class="sub">5 quick taps. No wrong answers, just data.</p>
-    <div class="card quiz" id="quiz" aria-live="polite">
-      <noscript><p class="muted">The quiz needs JavaScript. Or just text me your answers 😉</p></noscript>
-    </div>
-  </section>
-
-  <!-- ===================== THIS OR THAT (rounds live in THIS_OR_THAT in the script) ===================== -->
-  <section class="reveal" id="this-or-that">
-    <h2>This or that <span class="n">Swipe it</span></h2>
-    <p class="sub">Quick gut calls. Let's see how many line up with mine.</p>
-    <div class="card tot" id="tot" aria-live="polite">
-      <noscript><p class="muted">This game needs JavaScript.</p></noscript>
-    </div>
-  </section>
-
-  <!-- ===================== VITALS + LIFESTYLE ===================== -->
-  <section class="reveal">
-    <h2>The basics</h2>
-    <div class="card">
-      <h3>Vitals</h3>
-      <div class="two">
-        <div class="stat"><small>Family plans</small><span>Wants children</span></div>
-        <div class="stat"><small>Love style</small><span>Time together</span></div>
-        <div class="stat" id="reach-me" style="grid-column:span 2"><small>Best way to reach me</small><span>Call me, beep me, if you wanna reach me 📟 …but really, just <a class="reach-sms" id="reach-sms" href="sms:+18172179760?&amp;body=Hey%20Dominic!%20We%20met%20and%20I%20scanned%20your%20card%20%F0%9F%99%82">text me</a>.</span></div>
-      </div>
-      <h3>Lifestyle</h3>
-      <div class="two">
-        <div class="stat"><small>Drinking</small><span>Socially, on weekends</span></div>
-        <div class="stat"><small>Smoking</small><span>Non-smoker</span></div>
-        <div class="stat"><small>Cannabis</small><span>Never</span></div>
-        <div class="stat"><small>Social media</small><span>Passive scroller</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== INTERESTS ===================== -->
-  <section class="reveal">
-    <h2>Into</h2>
-    <div class="chips">
-      <span class="chip">Pro-Choice</span><span class="chip">Climate Change</span><span class="chip">Feminism</span>
-      <span class="chip">Tattoos</span><span class="chip">Self Love</span><span class="chip">Harry Potter</span>
-      <span class="chip">Marvel</span><span class="chip">Foodie</span><span class="chip">Thrifting</span><span class="chip">Trying New Things</span>
-    </div>
-  </section>
-
-  <!-- ===================== GOING OUT / WEEKENDS / PHONE ===================== -->
-  <section class="reveal">
-    <h2>Out &amp; about</h2>
-    <div class="card">
-      <h3>Going out</h3>
-      <ul class="clean">
-        <li><b>🥂</b>You can find me socializing</li>
-        <li><b>👕</b>I like to dress down</li>
-        <li><b>👋</b>Exit strategy: I'll just say bye.</li>
-      </ul>
-      <h3>Weekends</h3>
-      <ul class="clean">
-        <li><b>🔋</b>For recharging</li>
-        <li><b>🛋️</b>Saturday night: cozy nights in</li>
-        <li><b>🧖</b>Sunday: self-care</li>
-      </ul>
-    </div>
-  </section>
-
   <!-- ===================== ANTHEM ===================== -->
   <section class="reveal" id="anthem">
     <h2>My anthem</h2>
@@ -657,27 +651,6 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
       </div>
       <!-- Spotify player is lazy-loaded when this scrolls near the screen -->
       <div class="sp-embed" id="sp-embed" data-src="https://open.spotify.com/embed/track/0JvUjekRwmDcQq4S0Sxocf?utm_source=generator&amp;theme=0">Player loads as you scroll…</div>
-    </div>
-  </section>
-
-  <!-- ===================== FIRST DATE PICKER ===================== -->
-  <section class="reveal" id="dates">
-    <h2>Pick our first date</h2>
-    <p class="sub">Tap one and it goes straight to my texts.</p>
-    <div class="dates" id="date-list"></div>
-  </section>
-
-  <!-- ===================== SPACE COAST MAP (spots live in MAP_SPOTS in the script) ===================== -->
-  <section class="reveal" id="map-sec">
-    <h2>Space Coast date map</h2>
-    <p class="sub">A few spots around Melbourne.</p>
-    <div class="card map-card">
-      <div class="map-wrap">
-        <div id="map" role="region" aria-label="Map of first-date spots around Melbourne, Florida"></div>
-        <button class="map-lock" type="button" id="map-lock" aria-pressed="false" hidden>👆 Tap to move map</button>
-      </div>
-      <p class="map-hint" id="map-hint">Pinch to zoom · tap a pin for the date idea</p>
-      <ol class="spots" id="spot-list"></ol>
     </div>
   </section>
 
@@ -769,38 +742,6 @@ const DATES = [
 ];
 
 /* =====================================================================
-   EDIT HERE  ➜  COMPATIBILITY QUIZ
-   pts: 1 = same as me, 0.5 = close enough, 0 = still cute.  r = my reaction.
-   ===================================================================== */
-const QUIZ = [
-  { q: "Bedtime?", a: [
-    { t: "🌙 Early to bed", pts: 1, r: "A person after my own heart. 😴" },
-    { t: "🦉 Night owl", pts: 0, r: "I'll be asleep, but I'll text you good morning." } ] },
-  { q: "Dogs or cats?", a: [
-    { t: "🐶 Dogs", pts: 0.5, r: "Benji approves." },
-    { t: "🐱 Cats", pts: 0.5, r: "My cat approves." },
-    { t: "🐾 Both, obviously", pts: 1, r: "Correct answer. Benji and the cat agree." } ] },
-  { q: "Saturday night?", a: [
-    { t: "🛋️ Cozy night in", pts: 1, r: "Say less. 🍿" },
-    { t: "🥂 Out socializing", pts: 0.5, r: "I'm down. You pick the place." } ] },
-  { q: "Best way to reach you?", a: [
-    { t: "💬 Texts", pts: 1, r: "Texts it is. You know where the button is. 😉" },
-    { t: "📞 Calls", pts: 0.5, r: "Okay, I'll pick up for you." },
-    { t: "☕ In person", pts: 1, r: "Perfect. Pick a spot on the map below." } ] },
-  { q: "Working out?", a: [
-    { t: "💪 Every day", pts: 1, r: "Gym date incoming." },
-    { t: "🏃 A few times a week", pts: 0.5, r: "Solid. I'll be your spotter." },
-    { t: "🧖 Rest days are self-care", pts: 0.5, r: "Respect. Recovery counts." } ] },
-];
-const QUIZ_LINES = [ // [min score, line]
-  [100, "Okay, this is suspicious. Are you me? ✨"],
-  [80,  "Written in the stars, apparently. ✨"],
-  [60,  "Strong potential. Let's find out the rest."],
-  [40,  "Opposites attract, right? Now I'm curious."],
-  [0,   "Different is interesting. Tell me more. 😏"],
-];
-
-/* =====================================================================
    EDIT HERE  ➜  THIS OR THAT  (swipe/tap game)
    a / b = [emoji, label].  dom = my pick: "a", "b", or "any" (I like both: every answer counts as a match).
    both = optional label for a third "both" button.  cat = small label on the card.
@@ -872,7 +813,7 @@ const SITE_URL = "";
 
 /* ---------- render (no need to edit below) ---------- */
 const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-/* How long each answer's reply stays up before the quiz / This or that moves on (ms).
+/* How long each answer's reply stays up before This or that moves on (ms).
    Same for reduced motion: that setting removes animation, not reading time. */
 const READ_MS = 3800;
 /* Shows the reply + a thin countdown bar + "Next →". Auto-advances after ms; tapping the reply or Next skips ahead. */
@@ -1115,40 +1056,6 @@ safe('flips', function(){
     b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true')));
 });
 
-/* ---------- compatibility quiz ---------- */
-safe('quiz', function(){
-  const box = document.getElementById('quiz'); let step = 0, total = 0, busy = false;
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  function prog(){ return '<div class="q-prog" aria-hidden="true">' + QUIZ.map((_, k) => '<i class="' + (k < step ? 'on' : '') + '"></i>').join('') + '</div>'; }
-  function render(){
-    busy = false;
-    if (step >= QUIZ.length) return result();
-    const q = QUIZ[step];
-    box.innerHTML = prog() + '<div class="q-anim"><div class="q-step">Question ' + (step + 1) + ' of ' + QUIZ.length + '</div>' +
-      '<div class="q-q">' + esc(q.q) + '</div><div class="q-opts">' +
-      q.a.map((a, k) => '<button type="button" class="q-opt" data-k="' + k + '">' + esc(a.t) + '</button>').join('') +
-      '</div><div class="q-react" aria-live="polite"></div></div>';
-    box.querySelectorAll('.q-opt').forEach(b => b.onclick = () => {
-      if (busy) return; busy = true;
-      const a = q.a[+b.dataset.k]; total += a.pts; b.classList.add('picked');
-      replyThenNext(box.querySelector('.q-react'), a.r, READ_MS, () => { step++; render(); }, step === QUIZ.length - 1);
-    });
-  }
-  function result(){
-    const score = Math.round(total / QUIZ.length * 100);
-    let txt = QUIZ_LINES[QUIZ_LINES.length - 1][1]; for (const [min, l] of QUIZ_LINES) { if (score >= min) { txt = l; break; } }
-    box.innerHTML = prog() + '<div class="q-result q-anim"><div class="q-step">Our compatibility</div>' +
-      '<div class="q-score"><span id="q-num">0</span><small>%</small></div><div class="q-line">' + esc(txt) + '</div>' +
-      '<a class="btn primary" id="q-sms" href="' + smsHref('I took your compatibility quiz: we\'re ' + score + '% compatible 😏') + '">💬 Text me your score</a>' +
-      '<button type="button" class="linkbtn" id="q-again">Retake the quiz</button></div>';
-    box.dataset.score = score;
-    const num = document.getElementById('q-num');
-    if (REDUCED) num.textContent = score;
-    else { const s = performance.now(); (function f(now){ const k = Math.min(1, (now - s) / 1000); num.textContent = Math.round(score * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(s); }
-    document.getElementById('q-again').onclick = () => { step = 0; total = 0; render(); box.querySelector('.q-opt').focus(); };
-  }
-  render();
-});
 
 /* ---------- first date picker ---------- */
 safe('dates', function(){
@@ -1399,7 +1306,7 @@ safe('map', function(){
 /* ---------- (no comment) ---------- */
 safe('egg', function(){
   const egg = document.getElementById('egg'), x = document.getElementById('egg-x'), root = document.documentElement;
-  const NEED = 5, WINDOW = 4000, NOT_BG = 'a,button,input,select,textarea,label,iframe,img,video,audio,h1,h2,h3,p,li,.card,.prompt,.flip,.gallery,.chip,.fact,.hero-text,.story,.lb,.egg,.date,.spot,.leaflet-container,.ttl-opt,.q-opt,.ab-q';
+  const NEED = 5, WINDOW = 4000, NOT_BG = 'a,button,input,select,textarea,label,iframe,img,video,audio,h1,h2,h3,p,li,.card,.prompt,.flip,.gallery,.chip,.fact,.hero-text,.story,.lb,.egg,.date,.spot,.leaflet-container,.ttl-opt,.ab-q';
   let taps = [], down = null, opener = null;
   egg.querySelector('#egg-sms').href = smsHref('stardust');
   function twinkle(cx, cy){

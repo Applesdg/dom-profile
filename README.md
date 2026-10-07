@@ -1,7 +1,6 @@
 # Dominic – profile page
 
 Static, self-contained site: `index.html` + `img/` (nebula background) + `photos/` + `vendor/leaflet/`. No CDN; third-party requests are only the lazy-loaded Spotify player and OpenStreetMap map tiles.
-(`qr.js` is no longer loaded by the page; the on-page share section + QR were removed at Dom's request.)
 
 ## Add / reorder photos
 1. Drop JPGs into `photos/` (portrait ~4:5, ~1080px wide is ideal).
@@ -19,7 +18,7 @@ Phone, Instagram, and SMS greeting live in the `CONTACT` object ("EDIT HERE ➜ 
 - `PHOTOS` – photo order + story captions (first = hero)
 - `CONTACT` – phone / Instagram / SMS greeting
 - `DATES` – first-date picker cards
-- `QUIZ` / `QUIZ_LINES` – compatibility quiz questions + result lines
+- `THIS_OR_THAT` – "This or that" rounds: options, my pick (`dom`), and the witty reply for each answer (`say`). `READ_MS` sets how long each reply stays up.
 - Spotify track: `0JvUjekRwmDcQq4S0Sxocf` (Drew Barrymore, Bryce Vine) in the anthem section
 - `ASK_BENJI` – "Ask Benji" preset questions + Benji's answers (optional `sms` adds a Text button)
 - `MAP_SPOTS` – Space Coast date map pins (name, lat/lng, emoji, one-line idea). **Placeholders** – swap in real favorites.
