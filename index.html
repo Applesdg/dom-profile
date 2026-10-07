@@ -46,14 +46,13 @@ button{font:inherit;color:inherit}
 /* OPENING REVEAL */
 #intro{display:none}
 .intro #intro{display:flex;position:fixed;inset:0;z-index:80;align-items:center;justify-content:center;flex-direction:column;gap:14px;
-  background:#0b0920 url(img/nebula-tall.jpg) center/cover;cursor:pointer;transition:opacity .7s ease;
+  background:#0b0920 url(img/nebula-tall.jpg) center/cover;transition:opacity .7s ease;
   animation:introFailsafe .6s ease 3.2s forwards} /* auto-hides even if JS breaks */
 @media (min-aspect-ratio:1/1){.intro #intro{background-image:url(img/nebula-wide.jpg)}}
 .intro #intro::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 45% at 50% 50%,rgba(8,6,24,.72),rgba(8,6,24,.28))}
 .intro #stars{z-index:81}
 #intro .it{position:relative;font-family:var(--serif);font-size:clamp(38px,11vw,64px);color:var(--text);letter-spacing:.01em;text-shadow:0 0 30px rgba(232,176,122,.45);opacity:0;animation:introText .9s ease .1s forwards}
 #intro .it em{color:var(--accent);font-style:italic}
-#intro .skip{position:relative;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);opacity:0;animation:introText .7s ease .8s forwards;background:none;border:0;cursor:pointer;padding:8px}
 #intro.out{opacity:0;pointer-events:none}
 @keyframes introText{from{opacity:0;transform:translateY(8px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
 @keyframes introFailsafe{to{opacity:0;visibility:hidden;pointer-events:none}}
@@ -223,11 +222,7 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a120c;box-shadow:0 10px 30px -10px rgba(232,176,122,.55)}
 .btn.ghost{background:rgba(255,255,255,.03);color:var(--text);border:1px solid var(--line);margin-top:10px}
 .todo-note{font-size:13px;color:var(--muted);margin-top:10px}
-.signoff{text-align:center;padding:26px 6px 0}
-.signoff .l1{font-family:var(--serif);font-size:24px;line-height:1.3;text-shadow:0 2px 14px rgba(0,0,0,.7)}
-.signoff .l1 em{color:var(--accent)}
-.signoff .l2{font-family:var(--serif);font-size:44px;line-height:1.1;margin:8px 0 18px;color:var(--accent);text-shadow:0 0 30px rgba(232,176,122,.4)}
-footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+main.wrap{padding-bottom:44px}
 
 /* LIGHTBOX */
 .lb{position:fixed;inset:0;background:rgba(6,5,16,.95);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
@@ -250,7 +245,7 @@ footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-s
   .disc{animation:none}
   .reveal{transform:none;transition:opacity .3s}
   .flip .in{transition:none}
-  #intro .it,#intro .skip{animation-duration:.01s}
+  #intro .it{animation-duration:.01s}
   .ttl-res,.q-anim{animation:none}
 }
 </style>
@@ -262,10 +257,9 @@ footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-s
 <div class="nebula" aria-hidden="true"></div>
 <canvas id="stars" aria-hidden="true"></canvas>
 
-<!-- Opening reveal (first visit per session; tap to skip) -->
-<div id="intro" role="button" tabindex="0" aria-label="Curiosity wins. Tap to skip intro">
+<!-- Opening reveal (first visit per session; plays, then fades out on its own timer) -->
+<div id="intro" aria-hidden="true">
   <div class="it">Curiosity <em>wins.</em></div>
-  <span class="skip" aria-hidden="true">Tap to skip</span>
 </div>
 
 <!-- ===================== HERO ===================== -->
@@ -466,7 +460,7 @@ footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-s
         <li><b>🥂</b>You can find me socializing</li>
         <li><b>👕</b>I like to dress down</li>
         <li><b>⏰</b>I tend to arrive early</li>
-        <li><b>🤫</b>Exit strategy: "Shh, don't tell"</li>
+        <li><b>👋</b>Exit strategy: just say bye. No fake emergency calls needed.</li>
       </ul>
       <h3>Weekends</h3>
       <ul class="clean">
@@ -477,7 +471,7 @@ footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-s
       <h3>Me + my phone</h3>
       <ul class="clean">
         <li><b>⚡</b>Replies quickly</li>
-        <li><b>💬</b>Prefers texts</li>
+        <li><b>🤝</b>Better in person</li>
         <li><b>🔋</b>Phone always fully charged</li>
       </ul>
     </div>
@@ -514,16 +508,7 @@ footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-s
     </div>
   </section>
 
-  <!-- ===================== SIGN-OFF ===================== -->
-  <section class="reveal signoff" id="signoff">
-    <p class="l1">If you made it this far, <em>curiosity already won.</em></p>
-    <p class="l2">Text me.</p>
-    <a class="btn primary" id="signoff-sms" href="sms:+18172179760">💬 Text me</a>
-  </section>
-
 </main>
-
-<footer>Made for the people I meet in real life · Melbourne, FL</footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -685,15 +670,11 @@ const Stars = (function(){
 safe('intro', function(){
   const root = document.documentElement, el = document.getElementById('intro'), cv = document.getElementById('stars');
   if (!root.classList.contains('intro')) return;
-  let done = false;
-  function finish(){
-    if (done) return; done = true;
+  /* plays once, holds the title, then fades into the page on its own timer */
+  setTimeout(() => {
     el.classList.add('out'); cv.style.opacity = '0';
     setTimeout(() => { root.classList.remove('intro'); requestAnimationFrame(() => { cv.style.opacity = ''; }); }, 700);
-  }
-  el.addEventListener('click', finish);
-  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') { e.preventDefault(); finish(); } });
-  setTimeout(finish, REDUCED ? 1300 : 2200);
+  }, REDUCED ? 1300 : 2200);
 });
 
 /* ---------- hero ---------- */
@@ -802,7 +783,6 @@ safe('contact', function(){
   const smsHrefMain = 'sms:' + digits + (ios ? '&' : '?') + 'body=' + encodeURIComponent(CONTACT.smsBody);
   c.innerHTML = '<a class="btn primary" href="' + smsHrefMain + '">💬 Text me</a>' +
                 '<a class="btn ghost" href="tel:' + digits + '">📞 Call ' + (CONTACT.phoneDisplay || digits) + '</a>' + igBtn();
-  document.getElementById('signoff-sms').href = smsHref(CONTACT.smsBody);
 });
 function igBtn(){ return CONTACT.instagram ? '<a class="btn ghost ig" target="_blank" rel="noopener" href="https://www.instagram.com/' + encodeURIComponent(CONTACT.instagram) + '/">📸 Instagram @' + CONTACT.instagram + '</a>' : ''; }
 
