@@ -222,7 +222,17 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a120c;box-shadow:0 10px 30px -10px rgba(232,176,122,.55)}
 .btn.ghost{background:rgba(255,255,255,.03);color:var(--text);border:1px solid var(--line);margin-top:10px}
 .todo-note{font-size:13px;color:var(--muted);margin-top:10px}
-main.wrap{padding-bottom:44px}
+main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for the floating Text me bubble */
+
+/* FLOATING TEXT ME BUBBLE (hidden during the intro and while the easter egg is open) */
+.fab-sms{position:fixed;z-index:45;right:max(16px,calc(env(safe-area-inset-right) + 12px),calc((100vw - 560px) / 2 + 18px));bottom:calc(16px + env(safe-area-inset-bottom));
+  display:inline-flex;align-items:center;gap:8px;padding:13px 20px 13px 17px;border-radius:999px;text-decoration:none;font-weight:700;font-size:16px;line-height:1;color:#1a120c;
+  background:linear-gradient(135deg,#f2c391,var(--accent) 45%,var(--accent2));border:1px solid rgba(255,236,210,.55);
+  box-shadow:0 12px 28px -10px rgba(0,0,0,.85),0 0 22px rgba(232,176,122,.45),0 0 0 4px rgba(143,107,255,.18);
+  transition:opacity .45s ease,transform .45s ease,visibility 0s linear 0s;-webkit-tap-highlight-color:transparent}
+.fab-sms:active{transform:scale(.96)}
+.fab-sms .ic{font-size:18px}
+.intro .fab-sms,.egg-open .fab-sms{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s}
 
 /* VOICE INTRO (hidden until VOICE_INTRO is set and audio/hi.mp3 exists) */
 .hi-btn{display:inline-flex;align-items:center;gap:10px;margin:12px 0 0;background:var(--card);border:1px solid rgba(232,176,122,.45);border-radius:999px;padding:8px 16px 8px 8px;font-size:15px;font-weight:600;cursor:pointer}
@@ -311,7 +321,7 @@ main.wrap{padding-bottom:44px}
 .reveal.in{opacity:1;transform:none}
 .no-js .reveal{opacity:1;transform:none}
 
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#f6ecdf;color:#1a120c;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;white-space:nowrap;opacity:0;transition:.25s;z-index:90;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#f6ecdf;color:#1a120c;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;white-space:nowrap;opacity:0;transition:.25s;z-index:90;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%)}
 @media (min-width:600px){.hero{border-radius:0 0 28px 28px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -325,6 +335,7 @@ main.wrap{padding-bottom:44px}
   .ttl-res,.q-anim{animation:none}
   .msg,.egg.open,.egg-star,.hi-btn.playing .ic{animation:none}
   .twk{animation-duration:.5s}
+  .fab-sms,.intro .fab-sms,.egg-open .fab-sms{transform:none}
 }
 </style>
 </head>
@@ -508,7 +519,7 @@ main.wrap{padding-bottom:44px}
           <li><b>✅</b>I plan dates, not just "wyd"</li>
           <li><b>✅</b>Dog dad with a 100% approval rating</li>
           <li><b>✅</b>Better in person</li>
-          <li><b>✅</b>Exit strategy: just say bye</li>
+          <li><b>✅</b>If it's not a match, I'll just say bye. No games.</li>
         </ul>
       </div>
       <div class="card red">
@@ -577,7 +588,7 @@ main.wrap{padding-bottom:44px}
         <li><b>🥂</b>You can find me socializing</li>
         <li><b>👕</b>I like to dress down</li>
         <li><b>⏰</b>I tend to arrive early</li>
-        <li><b>👋</b>Exit strategy: just say bye. No fake emergency calls needed.</li>
+        <li><b>👋</b>Exit strategy: I'll just say bye.</li>
       </ul>
       <h3>Weekends</h3>
       <ul class="clean">
@@ -642,6 +653,9 @@ main.wrap{padding-bottom:44px}
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Floating Text me bubble (href is rebuilt from CONTACT by the script) -->
+<a class="fab-sms" id="fab-sms" href="sms:+18172179760?&amp;body=Hey%20Dominic!%20We%20met%20and%20I%20scanned%20your%20card%20%F0%9F%99%82" aria-label="Text Dominic"><span class="ic" aria-hidden="true">💬</span>Text me</a>
 
 <div class="egg" id="egg" role="dialog" aria-modal="true" aria-labelledby="egg-t">
   <div class="egg-card">
@@ -957,6 +971,12 @@ safe('contact', function(){
   c.innerHTML = '<a class="btn primary" href="' + smsHrefMain + '">💬 Text me</a>' +
                 '<a class="btn ghost" href="tel:' + digits + '">📞 Call ' + (CONTACT.phoneDisplay || digits) + '</a>' + igBtn();
 });
+/* floating Text me bubble: same sms format as the rest of the page */
+safe('fab', function(){
+  const f = document.getElementById('fab-sms');
+  if (!PHONE) { f.remove(); return; }
+  f.href = smsHref(CONTACT.smsBody);
+});
 function igBtn(){ return CONTACT.instagram ? '<a class="btn ghost ig" target="_blank" rel="noopener" href="https://www.instagram.com/' + encodeURIComponent(CONTACT.instagram) + '/">📸 Instagram @' + CONTACT.instagram + '</a>' : ''; }
 
 /* ---------- Meet Benji: approval meter ---------- */
@@ -1212,8 +1232,8 @@ safe('egg', function(){
     const t = document.createElement('span'); t.className = 'twk'; t.textContent = '✦'; t.setAttribute('aria-hidden', 'true');
     t.style.left = cx + 'px'; t.style.top = cy + 'px'; document.body.appendChild(t); setTimeout(() => t.remove(), 900);
   }
-  function open(){ opener = document.activeElement; egg.classList.add('open'); x.focus({ preventScroll: true }); }
-  function close(){ egg.classList.remove('open'); if (opener && opener.focus) opener.focus({ preventScroll: true }); }
+  function open(){ opener = document.activeElement; egg.classList.add('open'); root.classList.add('egg-open'); x.focus({ preventScroll: true }); }
+  function close(){ egg.classList.remove('open'); root.classList.remove('egg-open'); if (opener && opener.focus) opener.focus({ preventScroll: true }); }
   function isBg(t){ return t instanceof Element && !t.closest(NOT_BG); }
   /* pointer events (not click) so taps on plain background register on iOS too */
   document.addEventListener('pointerdown', e => { down = (e.isPrimary && isBg(e.target)) ? { x: e.clientX, y: e.clientY, t: Date.now() } : null; });
