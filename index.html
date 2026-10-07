@@ -285,6 +285,9 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .tot-react{min-height:1.6em;text-align:center;margin-top:12px;font-family:var(--serif);font-size:18px;color:var(--accent)}
 .tot-hint{text-align:center;font-size:12.5px;color:var(--muted)}
 .tot-reading .tot-hint,.tot-reading .tot-both{visibility:hidden}
+.tot-react .adv-txt{line-height:1.35}
+.tot-react.hit .adv-txt::before{content:"✓ ";content:"✓ " / "Match: ";color:#5fd39a;font:700 17px var(--sans)}
+.tot-react.miss .adv-txt::before{content:"✗ ";content:"✗ " / "Not my pick: ";color:var(--muted);font:700 17px var(--sans)}
 /* reply + countdown + Next (quiz & This or that) */
 .adv-on{cursor:pointer}
 .adv-txt{display:block}
@@ -801,16 +804,34 @@ const QUIZ_LINES = [ // [min score, line]
    EDIT HERE  ➜  THIS OR THAT  (swipe/tap game)
    a / b = [emoji, label].  dom = my pick: "a", "b", or "any" (I like both: every answer counts as a match).
    both = optional label for a third "both" button.  cat = small label on the card.
+   say = the reply shown for each answer: { a: "...", b: "...", both: "..." } (✓/✗ match mark is added automatically).
    ===================================================================== */
 const THIS_OR_THAT = [
-  { cat: "Dinner",           a: ["🌮", "Tacos"],         b: ["🍣", "Sushi"],            dom: "a" },
-  { cat: "Alarm clock",      a: ["🐦", "Early bird"],    b: ["🦉", "Night owl"],        dom: "a" },
-  { cat: "Pets",             a: ["🐶", "Dogs"],          b: ["🐱", "Cats"],             dom: "any", both: "🐾 Why not both?" },
-  { cat: "Getaway",          a: ["🏖️", "Beach"],         b: ["🏔️", "Mountains"],        dom: "b" },
-  { cat: "Date night",       a: ["🗓️", "Plan the date"], b: ["🎲", "Go with the flow"], dom: "a" },
-  { cat: "Getting to know you", a: ["📱", "Text"],       b: ["🤝", "In person"],        dom: "b" },
-  { cat: "Wardrobe",         a: ["👕", "Hoodie"],        b: ["👔", "Blazer"],           dom: "a" },  // GUESS: from "I like to dress down"
-  { cat: "Movie marathon",   a: ["⚡", "Harry Potter"],  b: ["🦸", "Marvel"],           dom: "b" },
+  { cat: "Dinner",           a: ["🌮", "Tacos"],         b: ["🍣", "Sushi"],            dom: "a",
+    say: { a: "Taco Tuesday is every day if you try hard enough. 🌮",
+           b: "Sushi? Cool. Fewer tacos for me to steal from you. 🍣" } },
+  { cat: "Alarm clock",      a: ["🐦", "Early bird"],    b: ["🦉", "Night owl"],        dom: "a",
+    say: { a: "See you at sunrise. I'll bring the coffee. ☀️",
+           b: "Night owl, huh? I'll leave the porch light on… until 9. 🦉" } },
+  { cat: "Pets",             a: ["🐶", "Dogs"],          b: ["🐱", "Cats"],             dom: "any", both: "🐾 Why not both?",
+    say: { a: "Benji just wagged. You're in. 🐶",
+           b: "The cat approves. Benji is still processing. 🐱",
+           both: "Correct answer. You've clearly done this before. 🐾" } },
+  { cat: "Getaway",          a: ["🏖️", "Beach"],         b: ["🏔️", "Mountains"],        dom: "b",
+    say: { a: "Beach it is. I'm packing hiking boots anyway. 🏖️",
+           b: "Mountain people unite. Altitude and attitude. ⛰️" } },
+  { cat: "Date night",       a: ["🗓️", "Plan the date"], b: ["🎲", "Go with the flow"], dom: "a",
+    say: { a: "A fellow planner. We'll have an itinerary by date two. 📋",
+           b: "Perfect. I'll plan, you flow. 🌊" } },
+  { cat: "Getting to know you", a: ["📱", "Text"],       b: ["🤝", "In person"],        dom: "b",
+    say: { a: "Texting's fine, but my jokes land better in person. 📱",
+           b: "Eye contact over emojis. Love that for us. 👀" } },
+  { cat: "Wardrobe",         a: ["👕", "Hoodie"],        b: ["👔", "Blazer"],           dom: "a",  // GUESS: from "I like to dress down"
+    say: { a: "Comfort over everything. Hoodie gang. 🧥",
+           b: "A blazer? Look at you. I'll iron something. 👔" } },
+  { cat: "Movie marathon",   a: ["⚡", "Harry Potter"],  b: ["🦸", "Marvel"],           dom: "b",
+    say: { a: "Harry Potter, huh? I'm a Slytherin, so this could get interesting. 🪄",
+           b: "Assemble. I call dibs on picking the first movie. 🦸" } },
 ];
 
 /* =====================================================================
@@ -1243,7 +1264,10 @@ safe('thisOrThat', function(){
     top.classList.remove('pick-a', 'pick-b', 'drag'); top.style.transform = ''; if (p !== 'both') top.classList.add('pick-' + p);
     box.classList.add('tot-reading');
     const dir = p === 'a' ? -1 : p === 'b' ? 1 : 0, FLY = REDUCED ? 0 : 380;
-    replyThenNext(box.querySelector('.tot-react'), isHit(r, p) ? 'Same as me ✨' : "I'd go " + r[r.dom][1] + ' ' + r[r.dom][0], READ_MS - FLY, () => {
+    const hit = isHit(r, p), say = (r.say && r.say[p]) || (hit ? 'Same as me ✨' : "I'd go " + r[r.dom][1] + ' ' + r[r.dom][0]);
+    const host = box.querySelector('.tot-react'); host.classList.add(hit ? 'hit' : 'miss');
+    const dot = box.querySelectorAll('.tot-dots i')[step]; if (dot) dot.className = hit ? 'hit' : 'miss';
+    replyThenNext(host, say, READ_MS - FLY, () => {
       top.style.transform = dir ? 'translateX(' + dir * 130 + '%) rotate(' + dir * 16 + 'deg)' : 'translateY(-40%) scale(.9)';
       top.style.opacity = '0'; if (under) { under.classList.remove('under'); under.style.opacity = '.85'; }
       setTimeout(() => { box.classList.remove('tot-reading'); step++; render(); }, FLY);
