@@ -94,6 +94,7 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .stat{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px}
 .stat small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
 .stat span{font-size:15px}
+.reach-sms{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;padding:6px 0;margin:-6px 0}
 
 /* PROMPTS */
 .prompt{background:linear-gradient(160deg,rgba(46,32,84,.88),rgba(16,12,38,.88));border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:12px}
@@ -544,7 +545,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
       <div class="two">
         <div class="stat"><small>Family plans</small><span>Wants children</span></div>
         <div class="stat"><small>Love style</small><span>Time together</span></div>
-        <div class="stat" id="reach-me" style="grid-column:span 2"><small>Best way to reach me</small><span>Call me, beep me, if you wanna reach me 📟</span></div>
+        <div class="stat" id="reach-me" style="grid-column:span 2"><small>Best way to reach me</small><span>Call me, beep me, if you wanna reach me 📟 …but really, just <a class="reach-sms" id="reach-sms" href="sms:+18172179760?&amp;body=Hey%20Dominic!%20We%20met%20and%20I%20scanned%20your%20card%20%F0%9F%99%82">text me</a>.</span></div>
       </div>
       <h3>Lifestyle</h3>
       <div class="two">
@@ -956,6 +957,7 @@ safe('fab', function(){
   const f = document.getElementById('fab-sms');
   if (!PHONE) { f.remove(); return; }
   f.href = smsHref(CONTACT.smsBody);
+  const r = document.getElementById('reach-sms'); if (r) r.href = smsHref(CONTACT.smsBody);
 });
 function igBtn(){ return CONTACT.instagram ? '<a class="btn ghost ig" target="_blank" rel="noopener" href="https://www.instagram.com/' + encodeURIComponent(CONTACT.instagram) + '/">📸 Instagram @' + CONTACT.instagram + '</a>' : ''; }
 
