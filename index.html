@@ -66,7 +66,6 @@ button{font:inherit;color:inherit}
 .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
 h1{font-family:var(--serif);font-weight:500;font-size:clamp(44px,13vw,64px);line-height:1;letter-spacing:-.01em;margin:6px 0 4px}
 .hero-sub{color:#e3d8e6;font-size:15px}
-.tagline{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:17px;margin-top:4px}
 .facts{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
 .fact{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;white-space:nowrap}
 .fact i{font-style:normal}
@@ -359,7 +358,6 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <div class="kicker">Hey, you scanned my card 👋</div>
     <h1>Dominic</h1>
     <div class="hero-sub">Melbourne, FL · Supply Chain Logistics</div>
-    <div class="tagline">Curiosity wins.</div>
   </div>
 </header>
 
@@ -367,16 +365,12 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <div class="facts" style="margin-top:4px">
       <span class="fact"><i>📏</i>5'10"</span>
       <span class="fact"><i>🎓</i>Texas A&amp;M</span>
-      <span class="fact"><i>🐍</i>Slytherin</span>
-      <span class="fact"><i>🧠</i>INTJ</span>
-      <span class="fact"><i>♒</i>Aquarius</span>
-      <span class="fact"><i>🐶</i>Dog/Cat Dad</span>
     </div>
     <!-- Voice intro: stays hidden until VOICE_INTRO is set in the script (and audio/hi.mp3 exists) -->
     <button class="hi-btn" type="button" id="hi-btn" hidden><span class="ic" aria-hidden="true">▶</span><span class="lbl">Hear me say hi</span></button>
 
   <!-- ===================== LOOKING FOR ===================== -->
-  <section class="reveal">
+  <section class="reveal" id="looking">
     <div class="card looking">
       <h3>Looking for</h3>
       <div class="big">Long-term, open to short</div>
@@ -388,7 +382,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   <section class="reveal">
     <h2>About me</h2>
     <div class="card">
-      <p class="lead">Slytherin. INTJ. Independent. Dog/Cat Dad. I <em>have</em> energy.</p>
+      <p class="lead">Independent. I <em>have</em> energy.</p>
       <p class="muted">I'm better in person, so let's grab a coffee.</p>
 
       <h3>Amateur specialist in</h3>
@@ -398,7 +392,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <li><b>😴</b>Improving sleep quality</li>
       </ul>
 
-      <h3>Looking for a wife</h3>
+      <h3>What I want in a wife</h3>
       <div class="chips">
         <span class="chip hl">Loyalty</span><span class="chip hl">Energy</span><span class="chip hl">Curiosity</span>
         <span class="chip hl">An INTJ match</span><span class="chip hl">Intellectually stimulating</span>
@@ -429,7 +423,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <div class="card benji">
       <div class="benji-photo">
         <img src="photos/06-dog.jpg" alt="Benji, Dominic's dog, upside down" loading="lazy" decoding="async">
-        <span class="badge">🐾 The real boss</span>
+        <span class="badge">🐾 Good boy</span>
       </div>
       <div class="benji-body">
         <div class="benji-name">Benji</div>
@@ -451,7 +445,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <p class="sub">Pick a question. Benji answers honestly (he can't lie, he's a dog).</p>
     <div class="card">
       <div class="chat" id="ab-chat" aria-live="polite">
-        <div class="msg benji"><img class="av" src="photos/06-dog.jpg" alt="Benji" loading="lazy" decoding="async"><div class="bub"><small>Benji</small>Woof. Head of HR here. Ask me anything about Dom. 🐾</div></div>
+        <div class="msg benji"><img class="av" src="photos/06-dog.jpg" alt="Benji" loading="lazy" decoding="async"><div class="bub"><small>Benji</small>Woof. Ask me anything about Dom. 🐾</div></div>
       </div>
       <div class="ab-qs" id="ab-qs" role="group" aria-label="Questions for Benji"></div>
     </div>
@@ -480,7 +474,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <a class="btn primary" id="ttl-sms" href="sms:+18172179760">💬 Text me your guess</a>
         <button class="linkbtn" type="button" id="ttl-reset">Change my guess</button>
       </div>
-      <div class="hint" id="ttl-hint">No spoilers here. Guess the lie, then text me or tell me in person.</div>
+      <div class="hint" id="ttl-hint">No spoilers here. Take your best guess.</div>
     </div>
   </section>
 
@@ -490,19 +484,19 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <div class="flips" id="flip-grid">
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">🧠</span><span class="t">INTJ</span><span class="tap">Tap</span></span>
-        <span class="face back"><b>INTJ</b>Planner with a curious streak. Expect real questions, not small talk.</span></span></button>
+        <span class="face back"><b>INTJ</b>Planner at heart. Expect real questions, not small talk.</span></span></button>
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">🐍</span><span class="t">Slytherin</span><span class="tap">Tap</span></span>
         <span class="face back"><b>Slytherin</b>Ambitious, loyal to my people, and yes, a little cunning.</span></span></button>
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">♒</span><span class="t">Aquarius</span><span class="tap">Tap</span></span>
-        <span class="face back"><b>Aquarius</b>Independent, curious, and always up for trying new things.</span></span></button>
+        <span class="face back"><b>Aquarius</b>Curious by nature. It's kind of my whole thing.</span></span></button>
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">🐶🐱</span><span class="t">Dog/Cat Dad</span><span class="tap">Tap</span></span>
-        <span class="face back"><b>Dog/Cat Dad</b>Fluent in belly rubs. Win over my cat and you've basically won me over.</span></span></button>
+        <span class="face back"><b>Dog/Cat Dad</b>Fluent in belly rubs and treat negotiations.</span></span></button>
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">💪</span><span class="t">Every day</span><span class="tap">Tap</span></span>
-        <span class="face back"><b>Workouts</b>Every single day. I told you: I <i>have</i> energy.</span></span></button>
+        <span class="face back"><b>Workouts</b>Every single day. Non-negotiable. 💪</span></span></button>
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">⏰</span><span class="t">Arrives early</span><span class="tap">Tap</span></span>
         <span class="face back"><b>Punctual</b>I tend to arrive early. Say 7 and I'm already there.</span></span></button>
@@ -518,16 +512,15 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <h3>🟢 Green flags</h3>
         <ul class="clean" id="green-flags">
           <li><b>✅</b>I plan dates, not just "wyd"</li>
-          <li><b>✅</b>Dog dad with a 100% approval rating</li>
-          <li><b>✅</b>Better in person</li>
-          <li><b>✅</b>If it's not a match, I'll just say bye. No games.</li>
+          <li><b>✅</b>Replies quickly</li>
+          <li><b>✅</b>Phone always fully charged</li>
         </ul>
       </div>
       <div class="card red">
         <h3>🚩 Red flags</h3>
         <ul class="clean" id="red-flags">
           <li><b>🚩</b>I will pet your dog before I say hi to you</li>
-          <li><b>🚩</b>I have strong opinions about tacos</li>
+          <li><b>🚩</b>I will steal one of your tacos</li>
           <li><b>🚩</b>Slytherin</li>
         </ul>
       </div>
@@ -551,21 +544,14 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
       <div class="two">
         <div class="stat"><small>Family plans</small><span>Wants children</span></div>
         <div class="stat"><small>Love style</small><span>Time together</span></div>
-        <div class="stat"><small>Communication</small><span>Better in person</span></div>
-        <div class="stat"><small>Zodiac</small><span>Aquarius</span></div>
+        <div class="stat" id="reach-me" style="grid-column:span 2"><small>Best way to reach me</small><span>Call me, beep me, if you wanna reach me 📟</span></div>
       </div>
       <h3>Lifestyle</h3>
       <div class="two">
-        <div class="stat"><small>Workout</small><span>Every day</span></div>
         <div class="stat"><small>Drinking</small><span>Socially, on weekends</span></div>
         <div class="stat"><small>Smoking</small><span>Non-smoker</span></div>
         <div class="stat"><small>Cannabis</small><span>Never</span></div>
-        <div class="stat" style="grid-column:span 2"><small>Social media</small><span>Passive scroller</span></div>
-      </div>
-      <h3>Work &amp; school</h3>
-      <div class="two">
-        <div class="stat"><small>Work</small><span>Supply Chain Logistics</span></div>
-        <div class="stat"><small>School</small><span>Texas A&amp;M University</span></div>
+        <div class="stat"><small>Social media</small><span>Passive scroller</span></div>
       </div>
     </div>
   </section>
@@ -588,7 +574,6 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
       <ul class="clean">
         <li><b>🥂</b>You can find me socializing</li>
         <li><b>👕</b>I like to dress down</li>
-        <li><b>⏰</b>I tend to arrive early</li>
         <li><b>👋</b>Exit strategy: I'll just say bye.</li>
       </ul>
       <h3>Weekends</h3>
@@ -596,12 +581,6 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <li><b>🔋</b>For recharging</li>
         <li><b>🛋️</b>Saturday night: cozy nights in</li>
         <li><b>🧖</b>Sunday: self-care</li>
-      </ul>
-      <h3>Me + my phone</h3>
-      <ul class="clean">
-        <li><b>⚡</b>Replies quickly</li>
-        <li><b>🤝</b>Better in person</li>
-        <li><b>🔋</b>Phone always fully charged</li>
       </ul>
     </div>
   </section>
@@ -630,7 +609,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   <!-- ===================== SPACE COAST MAP (spots live in MAP_SPOTS in the script) ===================== -->
   <section class="reveal" id="map-sec">
     <h2>Space Coast date map</h2>
-    <p class="sub">A few spots around Melbourne. Tap a pin, pick one.</p>
+    <p class="sub">A few spots around Melbourne.</p>
     <div class="card map-card">
       <div class="map-wrap">
         <div id="map" role="region" aria-label="Map of first-date spots around Melbourne, Florida"></div>
@@ -645,7 +624,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   <section class="reveal contact" id="contact">
     <h2 style="justify-content:center">Let's actually meet</h2>
     <div class="card">
-      <p class="muted" style="margin-bottom:14px">Better in person, but I reply quickly to texts.</p>
+      <p class="muted" style="margin-bottom:14px">Your move. 😉</p>
       <div id="contact-buttons"></div>
       <button class="btn ghost" type="button" id="save-contact">👤 Save my contact</button>
     </div>
@@ -723,7 +702,7 @@ const CONTACT = {
    EDIT HERE  ➜  FIRST DATE IDEAS  (tapping one opens a text: "I pick: ...")
    ===================================================================== */
 const DATES = [
-  { e: "☕", title: "Coffee + a beach walk", desc: "Grab coffee, then walk the beach in Melbourne.", pick: "Coffee + a walk on the beach ☕🌊" },
+  { e: "☕", title: "Coffee + a beach walk", desc: "Grab coffee, then walk the beach.", pick: "Coffee + a walk on the beach ☕🌊" },
   { e: "🍝", title: "Cozy dinner, foodie spot", desc: "Somewhere good to eat and actually talk.", pick: "A cozy dinner at a foodie spot 🍝" },
   { e: "🛍️", title: "Thrift-store adventure", desc: "We each pick a find for the other. No vetoes.", pick: "A thrift-store adventure 🛍️" },
 ];
@@ -734,30 +713,30 @@ const DATES = [
    ===================================================================== */
 const QUIZ = [
   { q: "Bedtime?", a: [
-    { t: "🌙 Early to bed", pts: 1, r: "Same. Sleep quality is a love language." },
+    { t: "🌙 Early to bed", pts: 1, r: "A person after my own heart. 😴" },
     { t: "🦉 Night owl", pts: 0, r: "I'll be asleep, but I'll text you good morning." } ] },
   { q: "Dogs or cats?", a: [
     { t: "🐶 Dogs", pts: 0.5, r: "Benji approves." },
     { t: "🐱 Cats", pts: 0.5, r: "My cat approves." },
-    { t: "🐾 Both, obviously", pts: 1, r: "Correct answer. Dog/cat dad here." } ] },
+    { t: "🐾 Both, obviously", pts: 1, r: "Correct answer. Benji and the cat agree." } ] },
   { q: "Saturday night?", a: [
-    { t: "🛋️ Cozy night in", pts: 1, r: "My favorite kind of Saturday." },
-    { t: "🥂 Out socializing", pts: 0.5, r: "I'm down. I'll be the one who arrives early." } ] },
+    { t: "🛋️ Cozy night in", pts: 1, r: "Say less. 🍿" },
+    { t: "🥂 Out socializing", pts: 0.5, r: "I'm down. You pick the place." } ] },
   { q: "Best way to reach you?", a: [
-    { t: "💬 Texts", pts: 1, r: "I reply quickly. Phone's always charged." },
+    { t: "💬 Texts", pts: 1, r: "Texts it is. You know where the button is. 😉" },
     { t: "📞 Calls", pts: 0.5, r: "Okay, I'll pick up for you." },
-    { t: "☕ In person", pts: 1, r: "Honestly? I'm better in person too." } ] },
+    { t: "☕ In person", pts: 1, r: "Perfect. Pick a spot on the map below." } ] },
   { q: "Working out?", a: [
     { t: "💪 Every day", pts: 1, r: "Gym date incoming." },
     { t: "🏃 A few times a week", pts: 0.5, r: "Solid. I'll be your spotter." },
-    { t: "🧖 Rest days are self-care", pts: 0.5, r: "Respect. Sunday self-care is sacred to me too." } ] },
+    { t: "🧖 Rest days are self-care", pts: 0.5, r: "Respect. Recovery counts." } ] },
 ];
 const QUIZ_LINES = [ // [min score, line]
   [100, "Okay, this is suspicious. Are you me? ✨"],
   [80,  "Written in the stars, apparently. ✨"],
-  [60,  "Strong potential. The rest we figure out over coffee."],
+  [60,  "Strong potential. Let's find out the rest."],
   [40,  "Opposites attract, right? Now I'm curious."],
-  [0,   "Different is interesting. Curiosity wins. 😏"],
+  [0,   "Different is interesting. Tell me more. 😏"],
 ];
 
 /* =====================================================================
@@ -767,8 +746,8 @@ const QUIZ_LINES = [ // [min score, line]
 const ASK_BENJI = [
   { q: "Is Dom a good cook?", a: "His steak is elite. I know because I supervise every single bite from the floor. 10/10, would beg again. 🥩" },
   { q: "Would Dom remember my birthday?", a: "He remembers my vet appointments AND my gotcha day. You'll get a cake. Possibly a backup cake. 🎂" },
-  { q: "Is Dom a cuddler?", a: "Professional level. Movie nights on the couch are his thing. Fair warning: I get the middle spot. 🛋️" },
-  { q: "Is Dom a morning person?", a: "He's up early and somehow already worked out. I get my walk before the sun does. ☀️" },
+  { q: "Is Dom a cuddler?", a: "Professional level. Fair warning: I get the middle spot. 🛋️" },
+  { q: "Is Dom a morning person?", a: "He's up early. I get my walk before the sun does. ☀️" },
   { q: "Should I text him?", a: "Woof. (That's a yes.) Tell him Benji sent you. 💬", sms: "Benji said I should text you 🐶" },
 ];
 
@@ -778,10 +757,10 @@ const ASK_BENJI = [
    e = pin emoji, idea = one-line date idea (also used in the text message).
    ===================================================================== */
 const MAP_SPOTS = [
-  { name: "Paradise Beach Park",        lat: 28.1232, lng: -80.5755, e: "🌊", idea: "Sunrise beach walk, then breakfast tacos (I have opinions)." },
+  { name: "Paradise Beach Park",        lat: 28.1232, lng: -80.5755, e: "🌊", idea: "Catch the sunrise, then grab breakfast nearby." },
   { name: "Melbourne Beach Pier",       lat: 28.0684, lng: -80.5669, e: "🌅", idea: "Watch the sunset over the Indian River from the old pier." },
-  { name: "Historic Downtown Melbourne", lat: 28.0783, lng: -80.6078, e: "🍝", idea: "Dinner on New Haven Ave, then wander the shops downtown." },
-  { name: "Eau Gallie Arts District",   lat: 28.1290, lng: -80.6262, e: "🎨", idea: "Mural hunt and coffee, then the riverfront at Ballard Park." },
+  { name: "Historic Downtown Melbourne", lat: 28.0783, lng: -80.6078, e: "🍝", idea: "Stroll New Haven Ave and pop into the shops." },
+  { name: "Eau Gallie Arts District",   lat: 28.1290, lng: -80.6262, e: "🎨", idea: "Mural hunt, then the riverfront at Ballard Park." },
   { name: "Brevard Zoo",                lat: 28.2255, lng: -80.7146, e: "🦒", idea: "Feed the giraffes, then kayak through the zoo." },
 ];
 
