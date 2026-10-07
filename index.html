@@ -233,6 +233,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .fab-sms:active{transform:scale(.96)}
 .fab-sms .ic{font-size:18px}
 .intro .fab-sms,.egg-open .fab-sms{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s}
+.egg-open .fab-sms{transition:none} /* the overlay is on top anyway: hide instantly */
 
 /* VOICE INTRO (hidden until VOICE_INTRO is set and audio/hi.mp3 exists) */
 .hi-btn{display:inline-flex;align-items:center;gap:10px;margin:12px 0 0;background:var(--card);border:1px solid rgba(232,176,122,.45);border-radius:999px;padding:8px 16px 8px 8px;font-size:15px;font-weight:600;cursor:pointer}
@@ -388,7 +389,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <h2>About me</h2>
     <div class="card">
       <p class="lead">Slytherin. INTJ. Independent. Dog/Cat Dad. I <em>have</em> energy.</p>
-      <p class="muted">Not looking for a pen pal; I'd rather meet in person.</p>
+      <p class="muted">I'm better in person, so let's grab a coffee.</p>
 
       <h3>Amateur specialist in</h3>
       <ul class="clean">
@@ -403,8 +404,8 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <span class="chip hl">An INTJ match</span><span class="chip hl">Intellectually stimulating</span>
       </div>
 
-      <h3>Not looking for</h3>
-      <div class="chips"><span class="chip">Argumentative</span><span class="chip">One-word responses</span></div>
+      <h3>We'll click if you</h3>
+      <div class="chips" id="click-if"><span class="chip">Talk things through</span><span class="chip">Love a real conversation</span><span class="chip">Laugh easily</span></div>
 
       <h3>Bonus points if you're</h3>
       <div class="chips"><span class="chip">Into longevity</span><span class="chip">A nurse</span><span class="chip">An early-to-bed type</span></div>
