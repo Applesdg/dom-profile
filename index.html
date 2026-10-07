@@ -29,7 +29,7 @@
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg)}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg);touch-action:manipulation}
 body{background:transparent;color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom);min-height:100vh}
 img{display:block;max-width:100%}
 a{color:inherit}
@@ -224,6 +224,82 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .todo-note{font-size:13px;color:var(--muted);margin-top:10px}
 main.wrap{padding-bottom:44px}
 
+/* VOICE INTRO (hidden until VOICE_INTRO is set and audio/hi.mp3 exists) */
+.hi-btn{display:inline-flex;align-items:center;gap:10px;margin:12px 0 0;background:var(--card);border:1px solid rgba(232,176,122,.45);border-radius:999px;padding:8px 16px 8px 8px;font-size:15px;font-weight:600;cursor:pointer}
+.hi-btn[hidden]{display:none}
+.hi-btn .ic{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#1a120c;display:grid;place-items:center;font-size:12px}
+.hi-btn.playing .ic{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(232,176,122,.18)}}
+
+/* ASK BENJI */
+.chat{display:flex;flex-direction:column;gap:10px;min-height:150px}
+.msg{display:flex;gap:10px;align-items:flex-end;animation:pop .3s ease}
+.msg .av{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:center 40%;border:2px solid var(--accent);flex:none}
+.msg .bub{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:11px 14px;font-family:var(--serif);font-size:18px;line-height:1.35;max-width:82%}
+.msg .bub small{display:block;font:700 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.msg.you{justify-content:flex-end}
+.msg.you .bub{background:linear-gradient(135deg,rgba(232,176,122,.95),rgba(207,138,98,.95));color:#1d130c;border:0;border-radius:18px 18px 6px 18px;font-family:var(--sans);font-size:15.5px;font-weight:600}
+.msg .bub .btn{margin-top:10px;padding:10px 12px;font-size:15px;font-family:var(--sans)}
+.typing{display:inline-flex;gap:4px;padding:4px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.ab-qs{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.ab-q{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-size:14.5px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.ab-q:active{transform:scale(.97)}
+.ab-q[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(232,176,122,.1)}
+
+/* GREEN / RED FLAGS */
+.flags{display:grid;gap:12px}
+.flags .card{border-left-width:4px}
+.flags .green{border-left-color:#5fd39a}
+.flags .red{border-left-color:#ff6b6b}
+.flags h3{margin-top:0;font-size:13px}
+.flags .green h3{color:#7fe0ae}.flags .red h3{color:#ff9090}
+.flags li{font-family:var(--serif);font-size:18.5px;line-height:1.3}
+.flags li b{font-family:var(--sans)}
+
+/* SPACE COAST MAP */
+.map-card{padding:0;overflow:hidden}
+.map-wrap{position:relative}
+#map{height:330px;background:#120e2a;isolation:isolate;z-index:0;font-family:var(--sans)}
+#map .leaflet-tile-pane{filter:invert(1) hue-rotate(195deg) brightness(.9) contrast(.88) saturate(.7)}
+#map .leaflet-control-attribution{background:rgba(11,9,32,.75);color:#bdb1c9;font-size:10px}
+#map .leaflet-control-attribution a{color:#e8c39e}
+#map .leaflet-bar a{background:#1a1436;color:var(--text);border-bottom-color:var(--line)}
+#map .leaflet-popup-content-wrapper,#map .leaflet-popup-tip{background:#1a1436;color:var(--text);border:1px solid var(--line);box-shadow:0 12px 30px -10px rgba(0,0,0,.8)}
+#map .leaflet-popup-content{margin:14px 16px;font-size:14px;line-height:1.4;min-width:190px}
+#map .leaflet-popup-content b{display:block;font-family:var(--serif);font-weight:500;font-size:18px;margin-bottom:4px}
+#map .leaflet-popup-content p{margin:0 0 10px;color:var(--muted)}
+#map a.btn.primary{color:#1a120c;padding:11px 12px;font-size:15px}
+#map .leaflet-popup-close-button{color:var(--muted)}
+.pin{background:none;border:0}
+.pin span{display:grid;place-items:center;width:36px;height:36px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 3px rgba(11,9,32,.7),0 0 18px rgba(232,176,122,.6)}
+.pin span i{transform:rotate(45deg);font-style:normal;font-size:17px}
+.map-lock{position:absolute;left:10px;bottom:10px;z-index:2;background:rgba(11,9,32,.85);border:1px solid rgba(232,176,122,.5);color:var(--text);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer}
+.map-lock[hidden]{display:none}
+.map-lock[aria-pressed="true"]{background:var(--accent);color:#1a120c}
+.map-hint{font-size:12.5px;color:var(--muted);padding:10px 16px 0}
+.spots{list-style:none;display:grid;gap:8px;padding:12px 14px 16px}
+.spot{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}
+.spot .e{font-size:22px;flex:none}
+.spot b{display:block;font-family:var(--serif);font-weight:500;font-size:17px;line-height:1.2}
+.spot small{color:var(--muted);font-size:13px;line-height:1.3;display:block}
+
+/* EASTER EGG */
+.egg{position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(6,5,16,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.egg.open{display:flex;animation:eggIn .35s ease}
+.egg-card{position:relative;width:100%;max-width:380px;text-align:center;background:linear-gradient(160deg,rgba(52,36,96,.97),rgba(16,12,38,.97));border:1px solid rgba(232,176,122,.45);border-radius:24px;padding:34px 22px 22px;box-shadow:0 0 60px -10px rgba(143,107,255,.55)}
+.egg-star{font-size:40px;line-height:1;animation:twinkle 1.6s ease-in-out infinite}
+.egg-t{font-family:var(--serif);font-size:28px;line-height:1.2;margin:12px 0 8px;color:var(--accent)}
+.egg-b{font-family:var(--serif);font-size:19px;line-height:1.35;margin-bottom:18px}
+.egg-b b{color:var(--accent);font-weight:500}
+.egg-x{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.1);font-size:18px;cursor:pointer}
+@keyframes eggIn{from{opacity:0}to{opacity:1}}
+@keyframes twinkle{50%{transform:scale(1.15) rotate(8deg);filter:drop-shadow(0 0 12px rgba(232,176,122,.9))}}
+.twk{position:fixed;z-index:94;pointer-events:none;color:#ffe2b8;font-size:16px;line-height:1;transform:translate(-50%,-50%);text-shadow:0 0 10px rgba(255,220,170,.9);animation:twk .8s ease-out forwards}
+@keyframes twk{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(0)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%) scale(1.2) rotate(90deg)}}
+
 /* LIGHTBOX */
 .lb{position:fixed;inset:0;background:rgba(6,5,16,.95);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
 .lb.open{display:flex}
@@ -247,6 +323,8 @@ main.wrap{padding-bottom:44px}
   .flip .in{transition:none}
   #intro .it{animation-duration:.01s}
   .ttl-res,.q-anim{animation:none}
+  .msg,.egg.open,.egg-star,.hi-btn.playing .ic{animation:none}
+  .twk{animation-duration:.5s}
 }
 </style>
 </head>
@@ -282,6 +360,8 @@ main.wrap{padding-bottom:44px}
       <span class="fact"><i>♒</i>Aquarius</span>
       <span class="fact"><i>🐶</i>Dog/Cat Dad</span>
     </div>
+    <!-- Voice intro: stays hidden until VOICE_INTRO is set in the script (and audio/hi.mp3 exists) -->
+    <button class="hi-btn" type="button" id="hi-btn" hidden><span class="ic" aria-hidden="true">▶</span><span class="lbl">Hear me say hi</span></button>
 
   <!-- ===================== LOOKING FOR ===================== -->
   <section class="reveal">
@@ -353,6 +433,18 @@ main.wrap{padding-bottom:44px}
     </div>
   </section>
 
+  <!-- ===================== ASK BENJI ===================== -->
+  <section class="reveal" id="ask-benji">
+    <h2>Ask Benji <span class="n">He knows things</span></h2>
+    <p class="sub">Pick a question. Benji answers honestly (he can't lie, he's a dog).</p>
+    <div class="card">
+      <div class="chat" id="ab-chat" aria-live="polite">
+        <div class="msg benji"><img class="av" src="photos/06-dog.jpg" alt="Benji" loading="lazy" decoding="async"><div class="bub"><small>Benji</small>Woof. Head of HR here. Ask me anything about Dom. 🐾</div></div>
+      </div>
+      <div class="ab-qs" id="ab-qs" role="group" aria-label="Questions for Benji"></div>
+    </div>
+  </section>
+
   <!-- ===================== PROMPTS ===================== -->
   <section class="reveal">
     <h2>A few prompts</h2>
@@ -402,6 +494,31 @@ main.wrap{padding-bottom:44px}
       <button class="flip" type="button" aria-pressed="false"><span class="in">
         <span class="face front"><span class="e">⏰</span><span class="t">Arrives early</span><span class="tap">Tap</span></span>
         <span class="face back"><b>Punctual</b>I tend to arrive early. Say 7 and I'm already there.</span></span></button>
+    </div>
+  </section>
+
+  <!-- ===================== GREEN FLAGS / RED FLAGS ===================== -->
+  <section class="reveal" id="flags">
+    <h2>Green flags, red flags</h2>
+    <p class="sub">A completely honest self-roast.</p>
+    <div class="flags">
+      <div class="card green">
+        <h3>🟢 Green flags</h3>
+        <ul class="clean" id="green-flags">
+          <li><b>✅</b>I plan dates, not just "wyd"</li>
+          <li><b>✅</b>Dog dad with a 100% approval rating</li>
+          <li><b>✅</b>Better in person</li>
+          <li><b>✅</b>Exit strategy: just say bye</li>
+        </ul>
+      </div>
+      <div class="card red">
+        <h3>🚩 Red flags</h3>
+        <ul class="clean" id="red-flags">
+          <li><b>🚩</b>I will pet your dog before I say hi to you</li>
+          <li><b>🚩</b>I have strong opinions about tacos</li>
+          <li><b>🚩</b>Slytherin</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -498,6 +615,20 @@ main.wrap{padding-bottom:44px}
     <div class="dates" id="date-list"></div>
   </section>
 
+  <!-- ===================== SPACE COAST MAP (spots live in MAP_SPOTS in the script) ===================== -->
+  <section class="reveal" id="map-sec">
+    <h2>Space Coast date map</h2>
+    <p class="sub">A few spots around Melbourne. Tap a pin, pick one.</p>
+    <div class="card map-card">
+      <div class="map-wrap">
+        <div id="map" role="region" aria-label="Map of first-date spots around Melbourne, Florida"></div>
+        <button class="map-lock" type="button" id="map-lock" aria-pressed="false" hidden>👆 Tap to move map</button>
+      </div>
+      <p class="map-hint" id="map-hint">Pinch to zoom · tap a pin for the date idea</p>
+      <ol class="spots" id="spot-list"></ol>
+    </div>
+  </section>
+
   <!-- ===================== CONTACT ===================== -->
   <section class="reveal contact" id="contact">
     <h2 style="justify-content:center">Let's actually meet</h2>
@@ -511,6 +642,16 @@ main.wrap{padding-bottom:44px}
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="egg" id="egg" role="dialog" aria-modal="true" aria-labelledby="egg-t">
+  <div class="egg-card">
+    <button class="egg-x" type="button" id="egg-x" aria-label="Close">✕</button>
+    <div class="egg-star" aria-hidden="true">✨</div>
+    <p class="egg-t" id="egg-t">Curiosity really does win.</p>
+    <p class="egg-b">Text me the word <b>"stardust"</b> and I'll know you found this.</p>
+    <a class="btn primary" id="egg-sms" href="sms:+18172179760?&amp;body=stardust">💬 Text me</a>
+  </div>
+</div>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <button class="x" aria-label="Close">✕</button>
@@ -603,6 +744,38 @@ const QUIZ_LINES = [ // [min score, line]
   [40,  "Opposites attract, right? Now I'm curious."],
   [0,   "Different is interesting. Curiosity wins. 😏"],
 ];
+
+/* =====================================================================
+   EDIT HERE  ➜  ASK BENJI  (q = question chip, a = Benji's answer)
+   Optional sms: adds a "Text him" button under that answer with this message.
+   ===================================================================== */
+const ASK_BENJI = [
+  { q: "Is Dom a good cook?", a: "His steak is elite. I know because I supervise every single bite from the floor. 10/10, would beg again. 🥩" },
+  { q: "Would Dom remember my birthday?", a: "He remembers my vet appointments AND my gotcha day. You'll get a cake. Possibly a backup cake. 🎂" },
+  { q: "Is Dom a cuddler?", a: "Professional level. Movie nights on the couch are his thing. Fair warning: I get the middle spot. 🛋️" },
+  { q: "Is Dom a morning person?", a: "He's up early and somehow already worked out. I get my walk before the sun does. ☀️" },
+  { q: "Should I text him?", a: "Woof. (That's a yes.) Tell him Benji sent you. 💬", sms: "Benji said I should text you 🐶" },
+];
+
+/* =====================================================================
+   EDIT HERE  ➜  SPACE COAST DATE MAP  (placeholder spots: swap in your real favorites)
+   lat/lng: right-click a spot in Google Maps → click the numbers to copy them.
+   e = pin emoji, idea = one-line date idea (also used in the text message).
+   ===================================================================== */
+const MAP_SPOTS = [
+  { name: "Paradise Beach Park",        lat: 28.1232, lng: -80.5755, e: "🌊", idea: "Sunrise beach walk, then breakfast tacos (I have opinions)." },
+  { name: "Melbourne Beach Pier",       lat: 28.0684, lng: -80.5669, e: "🌅", idea: "Watch the sunset over the Indian River from the old pier." },
+  { name: "Historic Downtown Melbourne", lat: 28.0783, lng: -80.6078, e: "🍝", idea: "Dinner on New Haven Ave, then wander the shops downtown." },
+  { name: "Eau Gallie Arts District",   lat: 28.1290, lng: -80.6262, e: "🎨", idea: "Mural hunt and coffee, then the riverfront at Ballard Park." },
+  { name: "Brevard Zoo",                lat: 28.2255, lng: -80.7146, e: "🦒", idea: "Feed the giraffes, then kayak through the zoo." },
+];
+
+/* =====================================================================
+   EDIT HERE  ➜  VOICE INTRO
+   Record a short hello, save it as audio/hi.mp3, then set this to "audio/hi.mp3".
+   Leave "" to keep the "Hear me say hi" button hidden.
+   ===================================================================== */
+const VOICE_INTRO = "";
 
 /* Public URL of this page. Leave "" to auto-detect from the address bar
    (works on any host). Set it to force the URL written into the vCard. */
@@ -935,6 +1108,129 @@ lb.querySelector('.next').onclick = e => { e.stopPropagation(); openLb(cur + 1);
 lb.onclick = e => { if (e.target === lb) closeLb(); };
 document.addEventListener('keydown', e => { if (!lb.classList.contains('open')) return;
   if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') openLb(cur - 1); if (e.key === 'ArrowRight') openLb(cur + 1); });
+/* ---------- Ask Benji ---------- */
+safe('askBenji', function(){
+  const chat = document.getElementById('ab-chat'), qs = document.getElementById('ab-qs');
+  const intro = chat.innerHTML; let run = 0;
+  const benjiMsg = inner => '<div class="msg benji"><img class="av" src="photos/06-dog.jpg" alt="Benji"><div class="bub"><small>Benji</small>' + inner + '</div></div>';
+  function txt(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  ASK_BENJI.forEach((item, k) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'ab-q'; b.dataset.k = k;
+    b.setAttribute('aria-pressed', 'false'); b.textContent = item.q;
+    b.onclick = () => {
+      const id = ++run;
+      qs.querySelectorAll('.ab-q').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      chat.innerHTML = intro + '<div class="msg you"><div class="bub">' + txt(item.q) + '</div></div>' +
+        benjiMsg('<span class="typing" aria-label="Benji is typing"><i></i><i></i><i></i></span>');
+      setTimeout(() => {
+        if (id !== run) return;
+        const extra = item.sms ? '<a class="btn primary" id="ab-sms" href="' + smsHref(item.sms) + '">💬 Text him (Benji says so)</a>' : '';
+        chat.lastElementChild.outerHTML = benjiMsg('<span class="ab-a">' + txt(item.a) + '</span>' + extra);
+      }, REDUCED ? 150 : 750);
+    };
+    qs.appendChild(b);
+  });
+});
+
+/* ---------- voice intro (only if enabled AND the file exists) ---------- */
+safe('voice', function(){
+  const btn = document.getElementById('hi-btn');
+  if (!VOICE_INTRO || !btn) return;
+  fetch(VOICE_INTRO, { method: 'HEAD', cache: 'no-store' }).then(r => {
+    if (!r.ok) return;
+    let audio = null; const ic = btn.querySelector('.ic'), lbl = btn.querySelector('.lbl');
+    function reset(){ btn.classList.remove('playing'); ic.textContent = '▶'; lbl.textContent = 'Hear me say hi'; }
+    btn.hidden = false;
+    btn.onclick = () => {
+      if (!audio) { audio = new Audio(VOICE_INTRO); audio.addEventListener('ended', reset); }
+      if (audio.paused) { audio.currentTime = 0; audio.play().then(() => { btn.classList.add('playing'); ic.textContent = '❚❚'; lbl.textContent = 'Playing…'; }).catch(reset); }
+      else { audio.pause(); reset(); }
+    };
+  }).catch(() => {});
+});
+
+/* ---------- Space Coast map (Leaflet + OpenStreetMap, lazy-loaded) ---------- */
+const DateMap = { map: null, markers: [] };
+safe('map', function(){
+  const sec = document.getElementById('map-sec'), box = document.getElementById('map'), list = document.getElementById('spot-list'),
+        lock = document.getElementById('map-lock'), hint = document.getElementById('map-hint');
+  if (!MAP_SPOTS.length) { sec.style.display = 'none'; return; }
+  const TOUCH = window.matchMedia && matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const smsFor = sp => smsHref('Map date: ' + sp.name + ' (' + sp.idea + ')');
+  MAP_SPOTS.forEach((sp, k) => {   // list under the map (works even before the map loads)
+    const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.className = 'spot';
+    b.innerHTML = '<span class="e" aria-hidden="true"></span><span><b></b><small></small></span>';
+    b.querySelector('.e').textContent = sp.e || '📍'; b.querySelector('b').textContent = sp.name; b.querySelector('small').textContent = sp.idea;
+    b.onclick = () => { const m = DateMap.markers[k]; if (!m) return; box.scrollIntoView({ block: 'center', behavior: REDUCED ? 'auto' : 'smooth' });
+                        DateMap.map.setView(m.getLatLng(), Math.max(DateMap.map.getZoom(), 13)); m.openPopup(); };
+    li.appendChild(b); list.appendChild(li);
+  });
+  function build(){
+    const L = window.L, map = L.map(box, { scrollWheelZoom: false, dragging: !TOUCH, touchZoom: true, doubleClickZoom: true, tapTolerance: 15, zoomSnap: .5 });
+    map.fitBounds(L.latLngBounds(MAP_SPOTS.map(sp => [sp.lat, sp.lng])), { padding: [34, 34] });   // set the view first so layers render immediately
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors' }).addTo(map);
+    MAP_SPOTS.forEach(sp => {
+      const icon = L.divIcon({ className: 'pin', html: '<span><i></i></span>', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -34] });
+      const m = L.marker([sp.lat, sp.lng], { icon, title: sp.name, alt: sp.name, riseOnHover: true }).addTo(map);
+      m.getElement().querySelector('i').textContent = sp.e || '📍';
+      const pop = document.createElement('div'); pop.className = 'spot-pop';
+      pop.innerHTML = '<b></b><p></p><a class="btn primary"></a>';
+      pop.querySelector('b').textContent = sp.name; pop.querySelector('p').textContent = sp.idea;
+      const a = pop.querySelector('a'); a.href = smsFor(sp); a.textContent = '💬 Text me this one';
+      m.bindPopup(pop, { maxWidth: 260, autoPanPadding: [20, 20] });
+      DateMap.markers.push(m);
+    });
+    DateMap.map = map;
+    if (TOUCH) {   // one finger scrolls the page; tap the button to drag the map with one finger
+      lock.hidden = false;
+      const setLock = on => { on ? map.dragging.enable() : map.dragging.disable(); lock.setAttribute('aria-pressed', on ? 'true' : 'false');
+                              lock.textContent = on ? '🔒 Done moving map' : '👆 Tap to move map'; };
+      lock.onclick = () => setLock(!map.dragging.enabled());
+      if ('IntersectionObserver' in window) new IntersectionObserver(es => { if (!es[0].isIntersecting && map.dragging.enabled()) setLock(false); }).observe(box);
+    } else hint.textContent = 'Drag to look around · tap a pin for the date idea';
+  }
+  function load(){
+    if (load.done) return; load.done = true;
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'vendor/leaflet/leaflet.css';
+    document.head.insertBefore(css, document.querySelector('style'));   // our theme overrides win
+    const js = document.createElement('script'); js.src = 'vendor/leaflet/leaflet.js';
+    js.onload = () => safe('map-build', build);
+    js.onerror = () => { box.style.display = 'none'; hint.textContent = 'Map unavailable right now. The spots are below.'; };
+    document.head.appendChild(js);
+  }
+  if ('IntersectionObserver' in window) { const o = new IntersectionObserver(es => { if (es[0].isIntersecting) { o.disconnect(); load(); } }, { rootMargin: '600px 0px' }); o.observe(sec); }
+  else load();
+});
+
+/* ---------- (no comment) ---------- */
+safe('egg', function(){
+  const egg = document.getElementById('egg'), x = document.getElementById('egg-x'), root = document.documentElement;
+  const NEED = 5, WINDOW = 4000, NOT_BG = 'a,button,input,select,textarea,label,iframe,img,video,audio,h1,h2,h3,p,li,.card,.prompt,.flip,.gallery,.chip,.fact,.hero-text,.story,.lb,.egg,.date,.spot,.leaflet-container,.ttl-opt,.q-opt,.ab-q';
+  let taps = [], down = null, opener = null;
+  egg.querySelector('#egg-sms').href = smsHref('stardust');
+  function twinkle(cx, cy){
+    const t = document.createElement('span'); t.className = 'twk'; t.textContent = '✦'; t.setAttribute('aria-hidden', 'true');
+    t.style.left = cx + 'px'; t.style.top = cy + 'px'; document.body.appendChild(t); setTimeout(() => t.remove(), 900);
+  }
+  function open(){ opener = document.activeElement; egg.classList.add('open'); x.focus({ preventScroll: true }); }
+  function close(){ egg.classList.remove('open'); if (opener && opener.focus) opener.focus({ preventScroll: true }); }
+  function isBg(t){ return t instanceof Element && !t.closest(NOT_BG); }
+  /* pointer events (not click) so taps on plain background register on iOS too */
+  document.addEventListener('pointerdown', e => { down = (e.isPrimary && isBg(e.target)) ? { x: e.clientX, y: e.clientY, t: Date.now() } : null; });
+  document.addEventListener('pointercancel', () => { down = null; });
+  document.addEventListener('pointerup', e => {
+    const d = down; down = null;
+    if (!d || !isBg(e.target) || egg.classList.contains('open') || Story.isOpen || lb.classList.contains('open') || root.classList.contains('intro')) return;
+    if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 12 || Date.now() - d.t > 600) return;
+    const now = Date.now(); taps = taps.filter(t => now - t < WINDOW); taps.push(now);
+    twinkle(e.clientX, e.clientY);
+    if (taps.length >= NEED) { taps = []; setTimeout(open, 120); }
+  });
+  x.onclick = close;
+  egg.addEventListener('click', e => { if (e.target === egg) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && egg.classList.contains('open')) close(); });
+});
+
 let sx = null; lb.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
 lb.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) openLb(cur + (dx < 0 ? 1 : -1)); sx = null; });
 </script>

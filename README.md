@@ -1,6 +1,6 @@
 # Dominic – profile page
 
-Static, self-contained site: `index.html` + `img/` (nebula background) + `photos/`. No CDN; the only third-party embed is the lazy-loaded Spotify player.
+Static, self-contained site: `index.html` + `img/` (nebula background) + `photos/` + `vendor/leaflet/`. No CDN; third-party requests are only the lazy-loaded Spotify player and OpenStreetMap map tiles.
 (`qr.js` is no longer loaded by the page; the on-page share section + QR were removed at Dom's request.)
 
 ## Add / reorder photos
@@ -21,6 +21,25 @@ Phone, Instagram, and SMS greeting live in the `CONTACT` object ("EDIT HERE ➜ 
 - `DATES` – first-date picker cards
 - `QUIZ` / `QUIZ_LINES` – compatibility quiz questions + result lines
 - Spotify track: `0JvUjekRwmDcQq4S0Sxocf` (Drew Barrymore, Bryce Vine) in the anthem section
+- `ASK_BENJI` – "Ask Benji" preset questions + Benji's answers (optional `sms` adds a Text button)
+- `MAP_SPOTS` – Space Coast date map pins (name, lat/lng, emoji, one-line idea). **Placeholders** – swap in real favorites.
+  Get lat/lng by right-clicking a spot in Google Maps and clicking the coordinates to copy them.
+- Green/red flags are plain HTML in the `#flags` section.
+- `VOICE_INTRO` – see below.
+
+## Voice intro ("Hear me say hi")
+The button is hidden until you turn it on:
+1. Record a short hello and save it as `audio/hi.mp3` (keep it small, ~10 s).
+2. In `index.html`, change `const VOICE_INTRO = "";` to `const VOICE_INTRO = "audio/hi.mp3";`
+3. Commit + push. (If the line is set but the file is missing, the button stays hidden.)
+
+## Map
+Leaflet 1.9.4 is vendored in `vendor/leaflet/` (no CDN, no API key); tiles come from OpenStreetMap
+(attribution shown on the map). On phones one finger scrolls the page and pinch zooms the map;
+"Tap to move map" enables one-finger dragging. Scroll-wheel zoom is off so the page never gets stuck.
+
+## Easter egg
+Tapping the background (not a card/button) 5 times within ~4 s opens a secret "stardust" overlay. No hint on the page.
 
 ## QR / cards
 `python3 /workspace/dom-profile-assets/make_qr.py <URL>` regenerates qr.png/svg, card.png/pdf, and the 10-up Letter sheet in `/workspace/dom-profile-assets/print/`.
