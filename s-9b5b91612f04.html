@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stats</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b0920">
+<link rel="icon" href="data:,">
+<style>
+:root{--text:#f6ecdf;--muted:#c2b6cc;--accent:#e8b07a;--accent2:#cf8a62;--violet:#8f6bff;--line:rgba(214,190,255,.16);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#0b0920}
+body{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 18px calc(24px + env(safe-area-inset-bottom));color:var(--text);font-family:var(--sans);
+  background:#0b0920 url(img/nebula-tall.jpg) center/cover fixed}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(80% 60% at 50% 40%,rgba(11,9,32,.35),rgba(11,9,32,.85));z-index:-1}
+.card{width:100%;max-width:420px;text-align:center;background:rgba(16,12,38,.82);border:1px solid var(--line);border-radius:24px;padding:30px 22px 22px;
+  box-shadow:0 20px 60px -30px rgba(0,0,0,.9),0 0 50px -18px rgba(143,107,255,.55)}
+.k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-family:var(--serif);font-weight:500;font-size:30px;margin:8px 0 2px}
+.num{font-family:var(--serif);font-size:96px;line-height:1.05;color:var(--accent);text-shadow:0 0 36px rgba(232,176,122,.5);margin:12px 0 4px;font-variant-numeric:tabular-nums}
+.sub{color:var(--muted);font-size:14px;line-height:1.45}
+.row{display:flex;gap:10px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+.btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a120c;border:0;border-radius:999px;padding:11px 18px;font-weight:700;font-size:15px}
+label.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font-size:14px;color:var(--text);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:14px;cursor:pointer}
+label.opt input{margin-top:3px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+label.opt small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.raw{margin-top:16px;font-size:11.5px;color:var(--muted);word-break:break-all}
+.raw a{color:#e8c39e}
+.err{color:#ff9a9a}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="k">Private · just for you</div>
+  <h1>Profile visits</h1>
+  <div class="num" id="num" aria-live="polite">…</div>
+  <p class="sub" id="status">Counted once per browser session. Started at 0 on Oct 7, 2026.</p>
+  <div class="row"><button class="btn" type="button" id="refresh">↻ Refresh</button></div>
+  <label class="opt"><input type="checkbox" id="nocount"><span>Don't count my own visits on this device<small>Saved in this browser only. Turn it on from each phone/computer you use.</small></span></label>
+  <p class="raw">Backup (raw count): <a id="raw" href="#" rel="noopener noreferrer" target="_blank"></a></p>
+</main>
+<script>
+/* Reads the counter only (GET never increments it). */
+const GET_URL = 'https://abacus.jasoncameron.dev/get/applesdg-dom-profile/scans-e5d47b2cac';
+const num = document.getElementById('num'), status = document.getElementById('status'), raw = document.getElementById('raw'), nc = document.getElementById('nocount');
+raw.href = GET_URL; raw.textContent = GET_URL;
+const base = status.textContent;
+function load(){
+  num.textContent = '…'; status.textContent = base; status.classList.remove('err');
+  fetch(GET_URL, { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer' })
+    .then(r => r.status === 404 ? { value: 0 } : r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => { num.textContent = Number(d.value || 0).toLocaleString(); status.textContent = base + ' Updated ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + '.'; })
+    .catch(() => { num.textContent = '–'; status.textContent = "Couldn't reach the counter right now. Try again in a minute."; status.classList.add('err'); });
+}
+document.getElementById('refresh').onclick = load;
+try { nc.checked = !!localStorage.getItem('cw_nocount'); nc.onchange = () => { nc.checked ? localStorage.setItem('cw_nocount', '1') : localStorage.removeItem('cw_nocount'); }; } catch (e) { nc.disabled = true; }
+load();
+</script>
+</body>
+</html>

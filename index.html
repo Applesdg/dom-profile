@@ -260,6 +260,40 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .ab-q:active{transform:scale(.97)}
 .ab-q[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(232,176,122,.1)}
 
+/* THIS OR THAT */
+.tot{min-height:340px;overflow:hidden}
+.tot-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:12px}
+.tot-dots{display:flex;gap:5px}
+.tot-dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.14)}
+.tot-dots i.on{background:var(--violet);box-shadow:0 0 8px var(--violet)}
+.tot-dots i.hit{background:#5fd39a}.tot-dots i.miss{background:rgba(255,255,255,.4)}
+.tot-deck{position:relative;height:240px}
+.tot-card{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;border-radius:24px;overflow:hidden;border:1px solid rgba(214,190,255,.28);background:#120e2a;
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.9),0 0 30px -12px rgba(143,107,255,.6);touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform .45s cubic-bezier(.3,.7,.2,1),opacity .45s ease}
+.tot-card.under{transform:scale(.93) translateY(14px);opacity:.45;pointer-events:none}
+.tot-card.drag{transition:none}
+.tot-opt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:0;padding:30px 10px 16px;cursor:pointer;font:inherit;color:var(--text);text-align:center;-webkit-tap-highlight-color:transparent;transition:filter .2s,box-shadow .2s}
+.tot-opt.l{background:linear-gradient(160deg,rgba(143,107,255,.6),rgba(36,22,84,.95))}
+.tot-opt.r{background:linear-gradient(200deg,rgba(232,176,122,.6),rgba(84,46,28,.95))}
+.tot-opt .em{font-size:50px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.tot-opt .tl{font-family:var(--serif);font-size:21px;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.tot-card.pick-a .tot-opt.l,.tot-card.pick-b .tot-opt.r{box-shadow:inset 0 0 0 3px var(--accent);filter:brightness(1.15)}
+.tot-card.pick-a .tot-opt.r,.tot-card.pick-b .tot-opt.l{filter:brightness(.55) saturate(.6)}
+.tot-vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:#0b0920;border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;font:800 13px var(--sans);letter-spacing:.06em;color:var(--accent);pointer-events:none;box-shadow:0 0 20px rgba(143,107,255,.65)}
+.tot-cat{position:absolute;top:11px;left:0;right:0;text-align:center;font:700 10.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.8);pointer-events:none;z-index:1}
+.tot-both{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14.5px;cursor:pointer}
+.tot-react{min-height:1.6em;text-align:center;margin-top:12px;font-family:var(--serif);font-size:18px;color:var(--accent)}
+.tot-hint{text-align:center;font-size:12.5px;color:var(--muted)}
+.tot-res{text-align:center;animation:pop .35s ease}
+.tot-big{font-family:var(--serif);font-size:66px;line-height:1;color:var(--accent);text-shadow:0 0 30px rgba(232,176,122,.45);margin-top:4px}
+.tot-big small{font-size:30px;color:var(--muted)}
+.tot-line{font-family:var(--serif);font-size:20px;margin:8px 0 12px}
+.tot-recap{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 16px;text-align:left}
+.tot-recap li{font-size:13.5px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:7px 9px;line-height:1.25}
+.tot-recap li.hit{border-color:rgba(95,211,154,.55)}
+.tot-recap li b{float:right;font-weight:700;color:#7fe0ae}.tot-recap li.miss b{color:var(--muted)}
+.tot-recap-h{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px;text-align:left}
+
 /* GREEN / RED FLAGS */
 .flags{display:grid;gap:12px}
 .flags .card{border-left-width:4px}
@@ -334,7 +368,8 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   .flip .in{transition:none}
   #intro .it{animation-duration:.01s}
   .ttl-res,.q-anim{animation:none}
-  .msg,.egg.open,.egg-star,.hi-btn.playing .ic{animation:none}
+  .msg,.egg.open,.egg-star,.hi-btn.playing .ic,.tot-res{animation:none}
+  .tot-card{transition:opacity .2s}
   .twk{animation-duration:.5s}
   .fab-sms,.intro .fab-sms,.egg-open .fab-sms{transform:none}
 }
@@ -534,6 +569,15 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
     <p class="sub">5 quick taps. No wrong answers, just data.</p>
     <div class="card quiz" id="quiz" aria-live="polite">
       <noscript><p class="muted">The quiz needs JavaScript. Or just text me your answers 😉</p></noscript>
+    </div>
+  </section>
+
+  <!-- ===================== THIS OR THAT (rounds live in THIS_OR_THAT in the script) ===================== -->
+  <section class="reveal" id="this-or-that">
+    <h2>This or that <span class="n">Swipe it</span></h2>
+    <p class="sub">Quick gut calls. Let's see how many line up with mine.</p>
+    <div class="card tot" id="tot" aria-live="polite">
+      <noscript><p class="muted">This game needs JavaScript.</p></noscript>
     </div>
   </section>
 
@@ -738,6 +782,22 @@ const QUIZ_LINES = [ // [min score, line]
   [60,  "Strong potential. Let's find out the rest."],
   [40,  "Opposites attract, right? Now I'm curious."],
   [0,   "Different is interesting. Tell me more. 😏"],
+];
+
+/* =====================================================================
+   EDIT HERE  ➜  THIS OR THAT  (swipe/tap game)
+   a / b = [emoji, label].  dom = my pick: "a", "b", or "any" (I like both: every answer counts as a match).
+   both = optional label for a third "both" button.  cat = small label on the card.
+   ===================================================================== */
+const THIS_OR_THAT = [
+  { cat: "Dinner",           a: ["🌮", "Tacos"],         b: ["🍣", "Sushi"],            dom: "a" },
+  { cat: "Alarm clock",      a: ["🐦", "Early bird"],    b: ["🦉", "Night owl"],        dom: "a" },
+  { cat: "Pets",             a: ["🐶", "Dogs"],          b: ["🐱", "Cats"],             dom: "any", both: "🐾 Why not both?" },
+  { cat: "Getaway",          a: ["🏖️", "Beach"],         b: ["🏔️", "Mountains"],        dom: "a" },
+  { cat: "Date night",       a: ["🗓️", "Plan the date"], b: ["🎲", "Go with the flow"], dom: "a" },
+  { cat: "Getting to know you", a: ["📱", "Text"],       b: ["🤝", "In person"],        dom: "b" },
+  { cat: "Wardrobe",         a: ["👕", "Hoodie"],        b: ["👔", "Blazer"],           dom: "a" },  // GUESS: from "I like to dress down"
+  { cat: "Movie marathon",   a: ["⚡", "Harry Potter"],  b: ["🦸", "Marvel"],           dom: "a" },  // GUESS: both are interests; Slytherin tips it to HP
 ];
 
 /* =====================================================================
@@ -1110,6 +1170,87 @@ lb.querySelector('.next').onclick = e => { e.stopPropagation(); openLb(cur + 1);
 lb.onclick = e => { if (e.target === lb) closeLb(); };
 document.addEventListener('keydown', e => { if (!lb.classList.contains('open')) return;
   if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') openLb(cur - 1); if (e.key === 'ArrowRight') openLb(cur + 1); });
+/* ---------- This or that ---------- */
+safe('thisOrThat', function(){
+  const box = document.getElementById('tot'), N = THIS_OR_THAT.length;
+  if (!N) { document.getElementById('this-or-that').style.display = 'none'; return; }
+  let step = 0, picks = [], busy = false;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const isHit = (r, p) => r.dom === 'any' || r.dom === p;
+  const domLabel = r => r.dom === 'any' ? r.a[0] + r.b[0] + ' Both' : r[r.dom][0] + ' ' + r[r.dom][1];
+  function dots(){ return '<div class="tot-dots" aria-hidden="true">' + THIS_OR_THAT.map((r, k) =>
+    '<i class="' + (k < step ? (isHit(r, picks[k]) ? 'hit' : 'miss') : k === step ? 'on' : '') + '"></i>').join('') + '</div>'; }
+  function card(r, under){
+    return '<div class="tot-card' + (under ? ' under' : '') + '"' + (under ? ' aria-hidden="true"' : '') + '><span class="tot-cat">' + esc(r.cat || '') + '</span>' +
+      ['a', 'b'].map(k => '<button type="button" class="tot-opt ' + (k === 'a' ? 'l' : 'r') + '" data-p="' + k + '"' + (under ? ' tabindex="-1"' : '') +
+        '><span class="em" aria-hidden="true">' + esc(r[k][0]) + '</span><span class="tl">' + esc(r[k][1]) + '</span></button>').join('') +
+      '<span class="tot-vs" aria-hidden="true">VS</span></div>';
+  }
+  function render(){
+    busy = false;
+    if (step >= N) return result();
+    const r = THIS_OR_THAT[step], nx = THIS_OR_THAT[step + 1];
+    box.innerHTML = '<div class="tot-top"><span>Round ' + (step + 1) + ' of ' + N + '</span>' + dots() + '</div>' +
+      '<div class="tot-deck">' + (nx ? card(nx, true) : '') + card(r, false) + '</div>' +
+      (r.both ? '<button type="button" class="tot-both" data-p="both">' + esc(r.both) + '</button>' : '') +
+      '<div class="tot-react"></div><div class="tot-hint">Swipe left or right, or tap your pick</div>';
+    const top = box.querySelector('.tot-card:not(.under)');
+    let sx = 0, sy = 0, dx = 0, down = false, dragged = false;
+    box.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', e => { if (dragged) { e.preventDefault(); return; } choose(b.dataset.p); }));
+    top.addEventListener('pointerdown', e => { if (busy) return; down = true; dragged = false; sx = e.clientX; sy = e.clientY; dx = 0; });
+    top.addEventListener('pointermove', e => {
+      if (!down) return; dx = e.clientX - sx; const dy = e.clientY - sy;
+      if (!dragged && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) { dragged = true; top.classList.add('drag'); try { top.setPointerCapture(e.pointerId); } catch (_) {} }
+      if (dragged) { top.style.transform = 'translateX(' + dx + 'px) rotate(' + dx / 18 + 'deg)'; top.classList.toggle('pick-a', dx < -40); top.classList.toggle('pick-b', dx > 40); }
+    });
+    const end = () => { if (!down) return; down = false; top.classList.remove('drag');
+      if (dragged && Math.abs(dx) > 70) choose(dx < 0 ? 'a' : 'b');
+      else { top.style.transform = ''; top.classList.remove('pick-a', 'pick-b'); }
+      setTimeout(() => { dragged = false; }, 50); };
+    top.addEventListener('pointerup', end); top.addEventListener('pointercancel', end);
+  }
+  function choose(p){
+    if (busy) return; busy = true;
+    const r = THIS_OR_THAT[step]; picks[step] = p;
+    const top = box.querySelector('.tot-card:not(.under)'), under = box.querySelector('.tot-card.under');
+    top.classList.remove('pick-a', 'pick-b'); if (p !== 'both') top.classList.add('pick-' + p);
+    box.querySelector('.tot-react').textContent = isHit(r, p) ? 'Same as me ✨' : "I'd go " + r[r.dom][1] + ' ' + r[r.dom][0];
+    const dir = p === 'a' ? -1 : p === 'b' ? 1 : 0;
+    setTimeout(() => {
+      top.style.transform = dir ? 'translateX(' + dir * 130 + '%) rotate(' + dir * 16 + 'deg)' : 'translateY(-40%) scale(.9)';
+      top.style.opacity = '0'; if (under) { under.classList.remove('under'); under.style.opacity = '.85'; }
+    }, REDUCED ? 0 : 380);
+    setTimeout(() => { step++; render(); }, REDUCED ? 700 : 1150);
+  }
+  function result(){
+    const hits = THIS_OR_THAT.reduce((n, r, k) => n + (isHit(r, picks[k]) ? 1 : 0), 0);
+    const line = hits === N ? 'Same picks, every round. Spooky. 🌌' : hits >= N - 2 ? 'Basically the same wavelength.'
+               : hits >= N / 2 ? 'Half twins. The other half is the fun part.' : 'We disagree on almost everything. Great debate material. 😏';
+    box.dataset.score = hits;
+    box.innerHTML = '<div class="tot-res"><div class="tot-top"><span>Final tally</span>' + dots() + '</div>' +
+      '<div class="tot-big"><span id="tot-num">' + hits + '</span><small>/' + N + '</small></div><div class="tot-line">' + esc(line) + '</div>' +
+      '<div class="tot-recap-h">My picks</div><ul class="tot-recap">' + THIS_OR_THAT.map((r, k) => '<li class="' + (isHit(r, picks[k]) ? 'hit' : 'miss') + '">' +
+        esc(domLabel(r)) + '<b>' + (isHit(r, picks[k]) ? '✓' : '✗') + '</b></li>').join('') + '</ul>' +
+      '<a class="btn primary" id="tot-sms" href="' + smsHref('This or that: we matched ' + hits + '/' + N + ' 🌌') + '">💬 Text me your score</a>' +
+      '<button type="button" class="linkbtn" id="tot-again">Play again</button></div>';
+    document.getElementById('tot-again').onclick = () => { step = 0; picks = []; render(); const f = box.querySelector('.tot-opt'); if (f) f.focus({ preventScroll: true }); };
+  }
+  render();
+});
+
+/* ---------- private visit counter ----------
+   Counts one visit per browser session. No cookies, no personal data, nothing shown on the page.
+   Skips automated browsers (tests/bots) and devices that opted out on the private stats page. */
+const COUNTER_HIT = 'https://abacus.jasoncameron.dev/hit/applesdg-dom-profile/scans-e5d47b2cac';
+safe('counter', function(){
+  if (navigator.webdriver) return;
+  try {
+    if (localStorage.getItem('cw_nocount') || sessionStorage.getItem('cw_counted')) return;
+    sessionStorage.setItem('cw_counted', '1');
+  } catch (e) { return; }
+  fetch(COUNTER_HIT, { mode: 'cors', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', keepalive: true }).catch(() => {});
+});
+
 /* ---------- Ask Benji ---------- */
 safe('askBenji', function(){
   const chat = document.getElementById('ab-chat'), qs = document.getElementById('ab-qs');
