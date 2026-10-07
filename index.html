@@ -284,6 +284,17 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .tot-both{display:block;margin:12px auto 0;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14.5px;cursor:pointer}
 .tot-react{min-height:1.6em;text-align:center;margin-top:12px;font-family:var(--serif);font-size:18px;color:var(--accent)}
 .tot-hint{text-align:center;font-size:12.5px;color:var(--muted)}
+.tot-reading .tot-hint,.tot-reading .tot-both{visibility:hidden}
+/* reply + countdown + Next (quiz & This or that) */
+.adv-on{cursor:pointer}
+.adv-txt{display:block}
+.adv-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.adv-bar{flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+.adv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--accent));transform-origin:left;transform:scaleX(0);animation:advbar linear forwards}
+@keyframes advbar{to{transform:scaleX(1)}}
+.adv-next{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:600 12.5px var(--sans);color:var(--muted);cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.adv-next:hover,.adv-next:focus-visible{color:var(--text);border-color:var(--accent)}
+.adv-done .adv-bar i{animation-play-state:paused}
 .tot-res{text-align:center;animation:pop .35s ease}
 .tot-big{font-family:var(--serif);font-size:66px;line-height:1;color:var(--accent);text-shadow:0 0 30px rgba(232,176,122,.45);margin-top:4px}
 .tot-big small{font-size:30px;color:var(--muted)}
@@ -370,6 +381,8 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   .ttl-res,.q-anim{animation:none}
   .msg,.egg.open,.egg-star,.hi-btn.playing .ic,.tot-res{animation:none}
   .tot-card{transition:opacity .2s}
+  .adv-bar{display:none}
+  .adv-row{justify-content:flex-end}
   .twk{animation-duration:.5s}
   .fab-sms,.intro .fab-sms,.egg-open .fab-sms{transform:none}
 }
@@ -793,11 +806,11 @@ const THIS_OR_THAT = [
   { cat: "Dinner",           a: ["🌮", "Tacos"],         b: ["🍣", "Sushi"],            dom: "a" },
   { cat: "Alarm clock",      a: ["🐦", "Early bird"],    b: ["🦉", "Night owl"],        dom: "a" },
   { cat: "Pets",             a: ["🐶", "Dogs"],          b: ["🐱", "Cats"],             dom: "any", both: "🐾 Why not both?" },
-  { cat: "Getaway",          a: ["🏖️", "Beach"],         b: ["🏔️", "Mountains"],        dom: "a" },
+  { cat: "Getaway",          a: ["🏖️", "Beach"],         b: ["🏔️", "Mountains"],        dom: "b" },
   { cat: "Date night",       a: ["🗓️", "Plan the date"], b: ["🎲", "Go with the flow"], dom: "a" },
   { cat: "Getting to know you", a: ["📱", "Text"],       b: ["🤝", "In person"],        dom: "b" },
   { cat: "Wardrobe",         a: ["👕", "Hoodie"],        b: ["👔", "Blazer"],           dom: "a" },  // GUESS: from "I like to dress down"
-  { cat: "Movie marathon",   a: ["⚡", "Harry Potter"],  b: ["🦸", "Marvel"],           dom: "a" },  // GUESS: both are interests; Slytherin tips it to HP
+  { cat: "Movie marathon",   a: ["⚡", "Harry Potter"],  b: ["🦸", "Marvel"],           dom: "b" },
 ];
 
 /* =====================================================================
@@ -838,6 +851,21 @@ const SITE_URL = "";
 
 /* ---------- render (no need to edit below) ---------- */
 const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* How long each answer's reply stays up before the quiz / This or that moves on (ms).
+   Same for reduced motion: that setting removes animation, not reading time. */
+const READ_MS = 3800;
+/* Shows the reply + a thin countdown bar + "Next →". Auto-advances after ms; tapping the reply or Next skips ahead. */
+function replyThenNext(host, text, ms, go, last){
+  host.innerHTML = '<span class="adv-txt"></span><span class="adv-row"><span class="adv-bar" aria-hidden="true"><i></i></span>' +
+    '<button type="button" class="adv-next">' + (last ? 'See results →' : 'Next →') + '</button></span>';
+  host.querySelector('.adv-txt').textContent = text;
+  const bar = host.querySelector('.adv-bar i'); bar.style.animationDuration = ms + 'ms';
+  host.classList.add('adv-on'); host.title = 'Tap to continue';
+  let done = false; const t = setTimeout(fire, ms);
+  function fire(){ if (done) return; done = true; clearTimeout(t); host.onclick = null; host.classList.add('adv-done'); go(); }
+  host.onclick = fire;
+  return fire;
+}
 const PHONE = CONTACT.phone.replace(/[^\d+]/g, '');
 /* sms link that works on iOS + Android: sms:+1XXXXXXXXXX?&body=... */
 function smsHref(body){ return 'sms:' + PHONE + (body ? '?&body=' + encodeURIComponent(body) : ''); }
@@ -1082,8 +1110,7 @@ safe('quiz', function(){
     box.querySelectorAll('.q-opt').forEach(b => b.onclick = () => {
       if (busy) return; busy = true;
       const a = q.a[+b.dataset.k]; total += a.pts; b.classList.add('picked');
-      box.querySelector('.q-react').textContent = a.r;
-      setTimeout(() => { step++; render(); }, REDUCED ? 900 : 1100);
+      replyThenNext(box.querySelector('.q-react'), a.r, READ_MS, () => { step++; render(); }, step === QUIZ.length - 1);
     });
   }
   function result(){
@@ -1213,14 +1240,14 @@ safe('thisOrThat', function(){
     if (busy) return; busy = true;
     const r = THIS_OR_THAT[step]; picks[step] = p;
     const top = box.querySelector('.tot-card:not(.under)'), under = box.querySelector('.tot-card.under');
-    top.classList.remove('pick-a', 'pick-b'); if (p !== 'both') top.classList.add('pick-' + p);
-    box.querySelector('.tot-react').textContent = isHit(r, p) ? 'Same as me ✨' : "I'd go " + r[r.dom][1] + ' ' + r[r.dom][0];
-    const dir = p === 'a' ? -1 : p === 'b' ? 1 : 0;
-    setTimeout(() => {
+    top.classList.remove('pick-a', 'pick-b', 'drag'); top.style.transform = ''; if (p !== 'both') top.classList.add('pick-' + p);
+    box.classList.add('tot-reading');
+    const dir = p === 'a' ? -1 : p === 'b' ? 1 : 0, FLY = REDUCED ? 0 : 380;
+    replyThenNext(box.querySelector('.tot-react'), isHit(r, p) ? 'Same as me ✨' : "I'd go " + r[r.dom][1] + ' ' + r[r.dom][0], READ_MS - FLY, () => {
       top.style.transform = dir ? 'translateX(' + dir * 130 + '%) rotate(' + dir * 16 + 'deg)' : 'translateY(-40%) scale(.9)';
       top.style.opacity = '0'; if (under) { under.classList.remove('under'); under.style.opacity = '.85'; }
-    }, REDUCED ? 0 : 380);
-    setTimeout(() => { step++; render(); }, REDUCED ? 700 : 1150);
+      setTimeout(() => { box.classList.remove('tot-reading'); step++; render(); }, FLY);
+    }, step === N - 1);
   }
   function result(){
     const hits = THIS_OR_THAT.reduce((n, r, k) => n + (isHit(r, picks[k]) ? 1 : 0), 0);
