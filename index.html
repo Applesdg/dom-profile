@@ -14,52 +14,80 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Curiosity wins">
 <meta name="twitter:image" content="https://applesdg.github.io/dom-profile/preview.png">
-<meta name="theme-color" content="#14110f">
+<meta name="theme-color" content="#0b0920">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314110f'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' font-family='Georgia,serif' fill='%23e8b07a'%3ED%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="photos/01-hero-car-with-dog.jpg">
+<script>
+/* Opening reveal: only on first visit this session. If this script never runs, no overlay is shown. */
+(function(){try{if(!sessionStorage.getItem('cw_intro')){document.documentElement.classList.add('intro');sessionStorage.setItem('cw_intro','1');}}catch(e){}})();
+</script>
 <style>
 :root{
-  --bg:#14110f; --bg2:#1c1815; --card:#221d19; --line:#3a312a;
-  --text:#f4ece4; --muted:#b9aca0; --accent:#e8b07a; --accent2:#d9826b; --green:#2f4a3a;
+  --bg:#0b0920; --bg2:rgba(255,255,255,.045); --card:rgba(16,12,38,.80); --line:rgba(214,190,255,.16);
+  --text:#f6ecdf; --muted:#c2b6cc; --accent:#e8b07a; --accent2:#cf8a62; --violet:#8f6bff;
   --radius:20px; --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55;
-  background-image:radial-gradient(900px 500px at 100% 0%,rgba(232,176,122,.07),transparent 60%),radial-gradient(700px 500px at 0% 60%,rgba(217,130,107,.05),transparent 60%);
-  padding-bottom:env(safe-area-inset-bottom)}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg)}
+body{background:transparent;color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom);min-height:100vh}
 img{display:block;max-width:100%}
 a{color:inherit}
-.wrap{max-width:560px;margin:0 auto;padding:0 18px}
+button{font:inherit;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:0 18px;position:relative}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* GALAXY BACKDROP */
+.nebula{position:fixed;inset:0;z-index:-3;background:#0b0920 url(img/nebula-tall.jpg) center/cover no-repeat;opacity:.62}
+.nebula::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 30%,rgba(11,9,32,.15),rgba(11,9,32,.75))}
+@media (min-aspect-ratio:1/1){.nebula{background-image:url(img/nebula-wide.jpg)}}
+#stars{position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-2;pointer-events:none;transition:opacity .6s ease}
+
+/* OPENING REVEAL */
+#intro{display:none}
+.intro #intro{display:flex;position:fixed;inset:0;z-index:80;align-items:center;justify-content:center;flex-direction:column;gap:14px;
+  background:#0b0920 url(img/nebula-tall.jpg) center/cover;cursor:pointer;transition:opacity .7s ease;
+  animation:introFailsafe .6s ease 3.2s forwards} /* auto-hides even if JS breaks */
+@media (min-aspect-ratio:1/1){.intro #intro{background-image:url(img/nebula-wide.jpg)}}
+.intro #intro::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 45% at 50% 50%,rgba(8,6,24,.72),rgba(8,6,24,.28))}
+.intro #stars{z-index:81}
+#intro .it{position:relative;font-family:var(--serif);font-size:clamp(38px,11vw,64px);color:var(--text);letter-spacing:.01em;text-shadow:0 0 30px rgba(232,176,122,.45);opacity:0;animation:introText .9s ease .1s forwards}
+#intro .it em{color:var(--accent);font-style:italic}
+#intro .skip{position:relative;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);opacity:0;animation:introText .7s ease .8s forwards;background:none;border:0;cursor:pointer;padding:8px}
+#intro.out{opacity:0;pointer-events:none}
+@keyframes introText{from{opacity:0;transform:translateY(8px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes introFailsafe{to{opacity:0;visibility:hidden;pointer-events:none}}
 
 /* HERO */
-.hero{position:relative;max-width:560px;margin:0 auto;aspect-ratio:4/5;max-height:88vh;min-height:440px;overflow:hidden;background:var(--bg2)}
-.hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
-.hero .ph{position:absolute;inset:0}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,17,15,.0) 55%,rgba(20,17,15,.6) 80%,var(--bg) 100%);pointer-events:none}
-.hero-text{position:absolute;left:0;right:0;bottom:0;padding:0 22px 10px;z-index:2;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+.hero{position:relative;max-width:560px;margin:0 auto;aspect-ratio:4/5;max-height:88vh;min-height:440px;overflow:hidden}
+.hero>img,.hero>.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;
+  -webkit-mask-image:linear-gradient(180deg,#000 62%,rgba(0,0,0,.6) 82%,transparent 100%);mask-image:linear-gradient(180deg,#000 62%,rgba(0,0,0,.6) 82%,transparent 100%)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(11,9,32,.55) 78%,rgba(11,9,32,.85) 100%);pointer-events:none}
+.hero-text{position:absolute;left:0;right:0;bottom:0;padding:0 22px 10px;z-index:2;text-shadow:0 2px 14px rgba(0,0,0,.7)}
 .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
 h1{font-family:var(--serif);font-weight:500;font-size:clamp(44px,13vw,64px);line-height:1;letter-spacing:-.01em;margin:6px 0 4px}
-.hero-sub{color:var(--muted);font-size:15px}
+.hero-sub{color:#e3d8e6;font-size:15px}
+.tagline{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:17px;margin-top:4px}
 .facts{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
 .fact{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;white-space:nowrap}
 .fact i{font-style:normal}
 
 /* SECTIONS */
-section{margin:26px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-h2{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
-h2 .n{font-family:var(--sans);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(232,176,122,.35);border-radius:999px;padding:3px 9px}
+section{margin:30px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 18px 50px -30px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.05)}
+h2{font-family:var(--serif);font-weight:500;font-size:26px;margin:0 0 12px;display:flex;align-items:center;gap:10px;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+h2 .n{font-family:var(--sans);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(232,176,122,.4);border-radius:999px;padding:3px 9px;background:rgba(11,9,32,.6)}
 h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:18px 0 8px}
 h3:first-child{margin-top:0}
 p+p{margin-top:10px}
 .lead{font-size:17px}
 .muted{color:var(--muted)}
+.sub{color:var(--muted);font-size:14px;margin:-6px 0 12px;text-shadow:0 1px 8px rgba(0,0,0,.7)}
 .looking{display:flex;flex-direction:column;gap:6px}
 .looking .big{font-family:var(--serif);font-size:22px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:14px}
+section>.chips .chip{background:var(--card)}
 .chip.hl{border-color:rgba(232,176,122,.5);color:var(--accent)}
 ul.clean{list-style:none;display:grid;gap:8px}
 ul.clean li{display:flex;gap:10px;align-items:flex-start}
@@ -70,40 +98,139 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .stat span{font-size:15px}
 
 /* PROMPTS */
-.prompt{background:linear-gradient(160deg,#2a221c,#1e1915);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:12px}
+.prompt{background:linear-gradient(160deg,rgba(46,32,84,.88),rgba(16,12,38,.88));border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:12px}
 .prompt .q{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.02em;margin-bottom:6px}
 .prompt .a{font-family:var(--serif);font-size:22px;line-height:1.3}
-.prompt ol{list-style:none;counter-reset:t;display:grid;gap:8px;margin-top:4px}
-.prompt ol li{counter-increment:t;font-family:var(--serif);font-size:20px;display:flex;gap:12px;align-items:baseline}
-.prompt ol li::before{content:counter(t);font-family:var(--sans);font-size:12px;font-weight:700;color:var(--bg);background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-grid;place-items:center;flex:none;transform:translateY(-2px)}
 .prompt .hint{font-size:13px;color:var(--muted);margin-top:10px}
 
-/* GALLERY */
+/* TWO TRUTHS */
+.ttl-opts{display:grid;gap:10px;margin-top:10px}
+.ttl-opt{display:flex;gap:12px;align-items:center;text-align:left;width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-family:var(--serif);font-size:19px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.ttl-opt:active{transform:scale(.98)}
+.ttl-opt .num{font:700 12px var(--sans);color:#1a120c;background:var(--accent);border-radius:50%;width:24px;height:24px;display:inline-grid;place-items:center;flex:none}
+.ttl-opt .tag{margin-left:auto;font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);opacity:0;transition:opacity .2s}
+.ttl-opt[aria-pressed="true"]{border-color:var(--accent);background:rgba(232,176,122,.12)}
+.ttl-opt[aria-pressed="true"] .tag{opacity:1}
+.ttl-res{margin-top:14px;animation:pop .35s ease}
+.ttl-res p{font-family:var(--serif);font-size:19px;margin-bottom:12px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;cursor:pointer;padding:10px;display:block;margin:4px auto 0}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+
+/* PHOTOS / STORY */
+.story-launch{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;cursor:pointer}
+.ring{width:62px;height:62px;border-radius:50%;padding:3px;background:conic-gradient(from 200deg,var(--accent),#f2d29c,var(--violet),var(--accent2),var(--accent));flex:none}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid #120e2a}
+.story-launch b{display:block;font-family:var(--serif);font-weight:500;font-size:19px}
+.story-launch small{color:var(--muted);font-size:13px}
+.story-launch .play{margin-left:auto;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#1a120c;display:grid;place-items:center;font-size:15px;flex:none}
 .gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.gallery .g{position:relative;border-radius:16px;overflow:hidden;background:var(--bg2);border:1px solid var(--line);aspect-ratio:4/5;cursor:zoom-in;padding:0;color:inherit;font:inherit}
+.gallery .g{position:relative;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--line);aspect-ratio:4/5;cursor:pointer;padding:0;color:inherit;font:inherit}
 .gallery .g.wide{grid-column:span 2;aspect-ratio:4/3}
 .gallery img{width:100%;height:100%;object-fit:cover}
-.ph{display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;background:repeating-linear-gradient(135deg,#1e1a16 0 12px,#211c18 12px 24px)}
+.gallery .cap{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 8px;font-size:12.5px;text-align:left;line-height:1.3;background:linear-gradient(transparent,rgba(8,6,24,.85))}
+.ph{display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;background:repeating-linear-gradient(135deg,#17122f 0 12px,#1b1536 12px 24px)}
 .ph svg{width:34px;height:34px;opacity:.5;margin:0 auto 6px}
 
+.story{position:fixed;inset:0;z-index:70;background:#05040d;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
+.story.open{display:block}
+.st-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.st-bg{position:absolute;inset:-40px;background:center/cover no-repeat;filter:blur(28px) brightness(.45);transform:scale(1.1)}
+.st-img{position:relative;width:100%;height:100%;object-fit:contain;max-width:560px;margin:0 auto}
+.st-top{position:absolute;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) 10px 30px;background:linear-gradient(rgba(0,0,0,.6),transparent);z-index:3;max-width:580px;margin:0 auto;pointer-events:none}
+.st-bars{display:flex;gap:4px}
+.st-bar{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden}
+.st-bar i{display:block;height:100%;width:0;background:#fff}
+.st-head{display:flex;align-items:center;gap:10px;margin-top:10px;font-weight:600;font-size:14px}
+.st-head img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--accent)}
+.st-head .cnt{color:rgba(255,255,255,.7);font-weight:400;font-size:13px}
+.st-x{position:absolute;z-index:4;top:max(22px,calc(env(safe-area-inset-top) + 12px));right:10px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.35);color:#fff;font-size:20px;cursor:pointer}
+.st-prev,.st-next{position:absolute;top:0;bottom:0;z-index:2;background:transparent;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.st-prev{left:0;width:35%}.st-next{right:0;width:65%}
+.st-cap{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:60px 22px calc(26px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.75));font-family:var(--serif);font-size:22px;line-height:1.3;text-align:center;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.st-hint{display:block;font:500 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:8px}
+
+/* BENJI */
+.benji{overflow:hidden;padding:0}
+.benji-photo{position:relative;aspect-ratio:16/11;overflow:hidden}
+.benji-photo img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.benji-photo .badge{position:absolute;left:14px;top:14px;background:rgba(11,9,32,.75);border:1px solid rgba(232,176,122,.5);color:var(--accent);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;border-radius:999px;padding:5px 10px}
+.benji-body{padding:18px 20px 20px}
+.benji-name{font-family:var(--serif);font-size:34px;line-height:1}
+.benji-full{color:var(--muted);font-size:14px;margin-top:6px}
+.benji-full b{color:var(--text);font-weight:600}
+.meter{margin-top:16px}
+.meter-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.meter-top output{font:500 26px var(--serif);letter-spacing:0;color:var(--accent);text-transform:none}
+.meter-track{height:14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);overflow:hidden;margin-top:6px}
+.meter-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--violet),var(--accent));box-shadow:0 0 18px rgba(232,176,122,.5)}
+.meter-status{font-size:14px;margin-top:8px;min-height:1.5em}
+.benji-joke{font-family:var(--serif);font-size:19px;margin-top:14px}
+.btn.small{padding:12px 14px;font-size:15px;margin-top:12px}
+
+/* FLIP CARDS */
+.flips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flip{position:relative;aspect-ratio:1/1;border:0;background:none;padding:0;cursor:pointer;perspective:900px;text-align:center}
+.flip .in{position:absolute;inset:0;transition:transform .6s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
+.flip[aria-pressed="true"] .in{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;border-radius:18px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.flip .front{background:linear-gradient(160deg,rgba(52,36,96,.9),rgba(16,12,38,.9))}
+.flip .front .e{font-size:34px;line-height:1}
+.flip .front .t{font-family:var(--serif);font-size:21px;margin-top:8px}
+.flip .front .tap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.flip .back{background:linear-gradient(160deg,rgba(232,176,122,.95),rgba(207,138,98,.95));color:#1d130c;transform:rotateY(180deg);font-family:var(--serif);font-size:16.5px;line-height:1.3}
+.flip .back b{display:block;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;opacity:.75}
+
+/* QUIZ */
+.quiz{min-height:280px}
+.q-prog{display:flex;gap:5px;margin-bottom:14px}
+.q-prog i{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.12)}
+.q-prog i.on{background:var(--accent)}
+.q-step{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.q-q{font-family:var(--serif);font-size:24px;line-height:1.25;margin:4px 0 14px}
+.q-opts{display:grid;gap:10px}
+.q-opt{width:100%;text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:16px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.q-opt:active{transform:scale(.98)}
+.q-opt.picked{border-color:var(--accent);background:rgba(232,176,122,.14)}
+.q-react{min-height:1.6em;margin-top:12px;color:var(--accent);font-family:var(--serif);font-size:18px}
+.q-anim{animation:pop .35s ease}
+.q-result{text-align:center}
+.q-score{font-family:var(--serif);font-size:78px;line-height:1;color:var(--accent);text-shadow:0 0 34px rgba(232,176,122,.45)}
+.q-score small{font-size:36px}
+.q-line{font-family:var(--serif);font-size:21px;margin:10px 0 16px}
+
+/* DATE PICKER */
+.dates{display:grid;gap:10px}
+.date{display:flex;gap:14px;align-items:center;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;transition:border-color .2s,transform .15s,background .2s}
+.date:active{transform:scale(.98)}
+.date .e{font-size:30px;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:rgba(232,176,122,.12);flex:none}
+.date b{display:block;font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.25;margin-bottom:3px}
+.date small{color:var(--muted);font-size:14px;display:block;line-height:1.35}
+.date .go{margin-left:auto;color:var(--accent);font-size:13px;font-weight:700;white-space:nowrap}
+.date.sel{border-color:var(--accent);background:rgba(58,40,70,.85)}
+
 /* ANTHEM */
-.anthem{display:flex;align-items:center;gap:14px;text-decoration:none}
-.disc{width:58px;height:58px;border-radius:50%;flex:none;background:radial-gradient(circle,#14110f 0 18%,#e8b07a 19% 22%,#2a221c 23% 100%);border:1px solid var(--line);animation:spin 8s linear infinite}
+.anthem{display:flex;align-items:center;gap:14px}
+.disc{width:58px;height:58px;border-radius:50%;flex:none;background:radial-gradient(circle,#0b0920 0 18%,#e8b07a 19% 22%,#2a2148 23% 100%);border:1px solid var(--line);animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.disc{animation:none}}
 .anthem .t{font-family:var(--serif);font-size:20px}
-.anthem .go{margin-left:auto;font-size:13px;color:#0b0a09;background:#1ed760;border-radius:999px;padding:8px 12px;font-weight:700;white-space:nowrap}
+.anthem .go{margin-left:auto;font-size:13px;color:#0b0a09;background:#1ed760;border-radius:999px;padding:8px 12px;font-weight:700;white-space:nowrap;text-decoration:none}
+.sp-embed{margin-top:14px;min-height:152px;border-radius:12px;background:rgba(255,255,255,.05);display:grid;place-items:center;color:var(--muted);font-size:13px;overflow:hidden}
+.sp-embed iframe{width:100%;height:152px;border:0;border-radius:12px;display:block}
 
 /* CONTACT */
 .contact{text-align:center}
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 18px;border-radius:16px;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer}
 .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a120c;box-shadow:0 10px 30px -10px rgba(232,176,122,.55)}
-.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);margin-top:10px}
+.btn.ghost{background:rgba(255,255,255,.03);color:var(--text);border:1px solid var(--line);margin-top:10px}
 .todo-note{font-size:13px;color:var(--muted);margin-top:10px}
-footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
+.signoff{text-align:center;padding:26px 6px 0}
+.signoff .l1{font-family:var(--serif);font-size:24px;line-height:1.3;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+.signoff .l1 em{color:var(--accent)}
+.signoff .l2{font-family:var(--serif);font-size:44px;line-height:1.1;margin:8px 0 18px;color:var(--accent);text-shadow:0 0 30px rgba(232,176,122,.4)}
+footer{text-align:center;color:#a79cb3;font-size:12px;padding:30px 0 40px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 
 /* LIGHTBOX */
-.lb{position:fixed;inset:0;background:rgba(10,8,7,.95);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.lb{position:fixed;inset:0;background:rgba(6,5,16,.95);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
 .lb.open{display:flex}
 .lb img{max-height:88vh;border-radius:14px}
 .lb button{position:absolute;background:rgba(255,255,255,.1);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer}
@@ -111,29 +238,44 @@ footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
 .lb .prev{left:10px;top:50%}.lb .next{right:10px;top:50%}
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
+.no-js .reveal{opacity:1;transform:none}
 
-/* SHARE */
-.share-fab{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:rgba(20,17,15,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--text);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:9px 14px;font:600 14px var(--sans);cursor:pointer}
-.share-hints{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
-.share-hints span{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 10px}
-.qrbox{background:#fff;border-radius:18px;padding:14px;width:min(240px,70vw);margin:18px auto 8px;box-shadow:0 12px 40px -18px rgba(232,176,122,.6)}
-.qrbox svg,.qrbox img{width:100%;height:auto;display:block}
-.urlrow{font-size:13px;color:var(--muted);word-break:break-all;margin-top:6px}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#f4ece4;color:#1a120c;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;white-space:nowrap;opacity:0;transition:.25s;z-index:60;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#f6ecdf;color:#1a120c;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;white-space:nowrap;opacity:0;transition:.25s;z-index:90;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%)}
 @media (min-width:600px){.hero{border-radius:0 0 28px 28px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .disc{animation:none}
+  .reveal{transform:none;transition:opacity .3s}
+  .flip .in{transition:none}
+  #intro .it,#intro .skip{animation-duration:.01s}
+  .ttl-res,.q-anim{animation:none}
+}
 </style>
 </head>
 <body>
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+
+<!-- Galaxy backdrop: static nebula + animated starfield canvas -->
+<div class="nebula" aria-hidden="true"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+
+<!-- Opening reveal (first visit per session; tap to skip) -->
+<div id="intro" role="button" tabindex="0" aria-label="Curiosity wins. Tap to skip intro">
+  <div class="it">Curiosity <em>wins.</em></div>
+  <span class="skip" aria-hidden="true">Tap to skip</span>
+</div>
 
 <!-- ===================== HERO ===================== -->
 <header class="hero" id="hero">
   <!-- Hero photo is PHOTOS[0] (see script at bottom) -->
-  <button class="share-fab" type="button" data-share aria-label="Share my profile">↗ Share</button>
   <div class="hero-text">
     <div class="kicker">Hey, you scanned my card 👋</div>
     <h1>Dominic</h1>
     <div class="hero-sub">Melbourne, FL · Supply Chain Logistics</div>
+    <div class="tagline">Curiosity wins.</div>
   </div>
 </header>
 
@@ -184,10 +326,37 @@ footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
     </div>
   </section>
 
-  <!-- ===================== PHOTOS ===================== -->
+  <!-- ===================== PHOTOS (story viewer) ===================== -->
   <section class="reveal" id="photos">
     <h2>Photos</h2>
+    <button class="story-launch" type="button" id="story-launch" aria-label="Watch my photo story">
+      <span class="ring"><img src="photos/01-hero-car-with-dog.jpg" alt="" loading="lazy" decoding="async"></span>
+      <span><b>Watch my story</b><small>Tap or swipe through · 6 photos</small></span>
+      <span class="play" aria-hidden="true">▶</span>
+    </button>
     <div class="gallery" id="gallery"></div>
+  </section>
+
+  <!-- ===================== MEET BENJI ===================== -->
+  <section class="reveal" id="benji">
+    <h2>Meet Benji <span class="n">Head of HR</span></h2>
+    <div class="card benji">
+      <div class="benji-photo">
+        <img src="photos/06-dog.jpg" alt="Benji, Dominic's dog, upside down" loading="lazy" decoding="async">
+        <span class="badge">🐾 The real boss</span>
+      </div>
+      <div class="benji-body">
+        <div class="benji-name">Benji</div>
+        <div class="benji-full">Full name: <b>Benjamin Franklin Joseph the 3rd Jr.</b></div>
+        <div class="meter" id="benji-meter">
+          <div class="meter-top"><span>Approval rating</span><output id="benji-pct" aria-live="polite">0%</output></div>
+          <div class="meter-track" role="progressbar" aria-label="Benji's approval rating" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="meter-fill" id="benji-fill"></div></div>
+          <div class="meter-status muted" id="benji-status">Awaiting sniff test…</div>
+        </div>
+        <p class="benji-joke">Must pass the Benji vibe check. 🐶✅</p>
+        <button class="btn ghost small" type="button" id="benji-rerun">🐾 Run the vibe check again</button>
+      </div>
+    </div>
   </section>
 
   <!-- ===================== PROMPTS ===================== -->
@@ -201,14 +370,53 @@ footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
       <div class="q">My weakness is…</div>
       <div class="a">Listening to you 🥹</div>
     </div>
-    <div class="prompt">
-      <div class="q">Two truths and a lie</div>
-      <ol>
-        <li>Jumped out of a plane</li>
-        <li>Joined the military</li>
-        <li>Been to 14 countries</li>
-      </ol>
-      <div class="hint">Guess the lie and tell me in person.</div>
+    <div class="prompt" id="ttl">
+      <div class="q">Two truths and a lie <span class="muted" style="font-weight:400">· tap the one you think is the lie</span></div>
+      <div class="ttl-opts" role="group" aria-label="Pick the lie">
+        <button class="ttl-opt" type="button" aria-pressed="false" data-n="1"><span class="num">1</span><span class="txt">Jumped out of a plane</span><span class="tag">My guess</span></button>
+        <button class="ttl-opt" type="button" aria-pressed="false" data-n="2"><span class="num">2</span><span class="txt">Joined the military</span><span class="tag">My guess</span></button>
+        <button class="ttl-opt" type="button" aria-pressed="false" data-n="3"><span class="num">3</span><span class="txt">Been to 14 countries</span><span class="tag">My guess</span></button>
+      </div>
+      <div class="ttl-res" id="ttl-res" hidden>
+        <p id="ttl-line" aria-live="polite"></p>
+        <a class="btn primary" id="ttl-sms" href="sms:+18172179760">💬 Text me your guess</a>
+        <button class="linkbtn" type="button" id="ttl-reset">Change my guess</button>
+      </div>
+      <div class="hint" id="ttl-hint">No spoilers here. Guess the lie, then text me or tell me in person.</div>
+    </div>
+  </section>
+
+  <!-- ===================== FLIP CARDS ===================== -->
+  <section class="reveal" id="flips">
+    <h2>Fun facts <span class="n">Tap to flip</span></h2>
+    <div class="flips" id="flip-grid">
+      <button class="flip" type="button" aria-pressed="false"><span class="in">
+        <span class="face front"><span class="e">🧠</span><span class="t">INTJ</span><span class="tap">Tap</span></span>
+        <span class="face back"><b>INTJ</b>Planner with a curious streak. Expect real questions, not small talk.</span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="in">
+        <span class="face front"><span class="e">🐍</span><span class="t">Slytherin</span><span class="tap">Tap</span></span>
+        <span class="face back"><b>Slytherin</b>Ambitious, loyal to my people, and yes, a little cunning.</span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="in">
+        <span class="face front"><span class="e">♒</span><span class="t">Aquarius</span><span class="tap">Tap</span></span>
+        <span class="face back"><b>Aquarius</b>Independent, curious, and always up for trying new things.</span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="in">
+        <span class="face front"><span class="e">🐶🐱</span><span class="t">Dog/Cat Dad</span><span class="tap">Tap</span></span>
+        <span class="face back"><b>Dog/Cat Dad</b>Fluent in belly rubs. Win over my cat and you've basically won me over.</span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="in">
+        <span class="face front"><span class="e">💪</span><span class="t">Every day</span><span class="tap">Tap</span></span>
+        <span class="face back"><b>Workouts</b>Every single day. I told you: I <i>have</i> energy.</span></span></button>
+      <button class="flip" type="button" aria-pressed="false"><span class="in">
+        <span class="face front"><span class="e">⏰</span><span class="t">Arrives early</span><span class="tap">Tap</span></span>
+        <span class="face back"><b>Punctual</b>I tend to arrive early. Say 7 and I'm already there.</span></span></button>
+    </div>
+  </section>
+
+  <!-- ===================== COMPATIBILITY QUIZ ===================== -->
+  <section class="reveal" id="quiz-sec">
+    <h2>Are we compatible?</h2>
+    <p class="sub">5 quick taps. No wrong answers, just data.</p>
+    <div class="card quiz" id="quiz" aria-live="polite">
+      <noscript><p class="muted">The quiz needs JavaScript. Or just text me your answers 😉</p></noscript>
     </div>
   </section>
 
@@ -276,13 +484,24 @@ footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
   </section>
 
   <!-- ===================== ANTHEM ===================== -->
-  <section class="reveal">
+  <section class="reveal" id="anthem">
     <h2>My anthem</h2>
-    <a class="card anthem" href="https://open.spotify.com/search/Drew%20Barrymore%20Bryce%20Vine" target="_blank" rel="noopener">
-      <div class="disc" aria-hidden="true"></div>
-      <div><div class="t">Drew Barrymore</div><div class="muted" style="font-size:14px">Bryce Vine</div></div>
-      <span class="go">▶ Spotify</span>
-    </a>
+    <div class="card">
+      <div class="anthem">
+        <div class="disc" aria-hidden="true"></div>
+        <div><div class="t">Drew Barrymore</div><div class="muted" style="font-size:14px">Bryce Vine</div></div>
+        <a class="go" href="https://open.spotify.com/track/0JvUjekRwmDcQq4S0Sxocf" target="_blank" rel="noopener">▶ Spotify</a>
+      </div>
+      <!-- Spotify player is lazy-loaded when this scrolls near the screen -->
+      <div class="sp-embed" id="sp-embed" data-src="https://open.spotify.com/embed/track/0JvUjekRwmDcQq4S0Sxocf?utm_source=generator&amp;theme=0">Player loads as you scroll…</div>
+    </div>
+  </section>
+
+  <!-- ===================== FIRST DATE PICKER ===================== -->
+  <section class="reveal" id="dates">
+    <h2>Pick our first date</h2>
+    <p class="sub">Tap one and it goes straight to my texts.</p>
+    <div class="dates" id="date-list"></div>
   </section>
 
   <!-- ===================== CONTACT ===================== -->
@@ -291,20 +510,15 @@ footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
     <div class="card">
       <p class="muted" style="margin-bottom:14px">Better in person, but I reply quickly to texts.</p>
       <div id="contact-buttons"></div>
+      <button class="btn ghost" type="button" id="save-contact">👤 Save my contact</button>
     </div>
   </section>
 
-  <!-- ===================== SHARE / SAVE CONTACT / QR ===================== -->
-  <section class="reveal contact" id="share">
-    <h2 style="justify-content:center">Share my profile</h2>
-    <div class="card">
-      <button class="btn primary" type="button" data-share>📤 Share my profile</button>
-      <div class="share-hints"><span>📲 AirDrop (iPhone)</span><span>⇄ Quick Share (Android)</span><span>🔗 Copy link</span></div>
-      <button class="btn ghost" type="button" id="save-contact">👤 Save my contact</button>
-      <div class="qrbox" id="qr" aria-label="QR code for this profile"></div>
-      <div class="muted" style="font-size:14px">Show this to a friend and let them scan it</div>
-      <div class="urlrow" id="share-url"></div>
-    </div>
+  <!-- ===================== SIGN-OFF ===================== -->
+  <section class="reveal signoff" id="signoff">
+    <p class="l1">If you made it this far, <em>curiosity already won.</em></p>
+    <p class="l2">Text me.</p>
+    <a class="btn primary" id="signoff-sms" href="sms:+18172179760">💬 Text me</a>
   </section>
 
 </main>
@@ -320,23 +534,35 @@ footer{text-align:center;color:#7d7066;font-size:12px;padding:30px 0 40px}
   <button class="next" aria-label="Next">›</button>
 </div>
 
-<script src="qr.js"></script>
+<div class="story" id="story" role="dialog" aria-modal="true" aria-label="Photo story">
+  <div class="st-stage"><div class="st-bg" aria-hidden="true"></div><img class="st-img" alt=""></div>
+  <button class="st-prev" type="button" aria-label="Previous photo"></button>
+  <button class="st-next" type="button" aria-label="Next photo"></button>
+  <div class="st-top">
+    <div class="st-bars" id="st-bars"></div>
+    <div class="st-head"><img src="photos/01-hero-car-with-dog.jpg" alt="" loading="lazy"><span>Dominic</span><span class="cnt" id="st-cnt"></span></div>
+  </div>
+  <button class="st-x" type="button" aria-label="Close story">✕</button>
+  <div class="st-cap"><span id="st-cap" aria-live="polite"></span><span class="st-hint" id="st-hint">Tap right for next · left for back</span></div>
+</div>
+
 <script>
 /* =====================================================================
    EDIT HERE  ➜  PHOTOS
    - Drop image files into the photos/ folder, then list them below.
    - The FIRST entry is the big hero photo at the top of the page.
-   - Order here = order in the gallery. Add as many as you like.
+   - Order here = order in the gallery AND in the swipeable story.
+   - "caption" = the short line shown on the story + gallery tile.
    - Optional "pos" = CSS object-position for cropping (e.g. "center 20%").
    ===================================================================== */
 const PHOTOS = [
-  { src: "photos/01-hero-car-with-dog.jpg", alt: "Dominic and his dog in the car", pos: "center 35%" },
-  { src: "photos/02-with-dad.jpg",          alt: "Dominic with his dad at a restaurant", pos: "center 25%" },
-  { src: "photos/03-galaxys-edge.jpg",      alt: "Dominic at Star Wars: Galaxy's Edge" },
-  { src: "photos/04-bumblebee.jpg",         alt: "Dominic with Bumblebee" },
-  { src: "photos/05-selfie.jpg",            alt: "Dominic selfie" },
-  { src: "photos/06-dog.jpg",               alt: "Dominic's dog, upside down" },
-  // { src: "photos/07-new.jpg", alt: "Describe the photo" },
+  { src: "photos/01-hero-car-with-dog.jpg", alt: "Dominic and his dog Benji in the car", caption: "Me and my co-pilot, Benji", pos: "center 35%" },
+  { src: "photos/02-with-dad.jpg",          alt: "Dominic with his dad at a restaurant", caption: "Lunch with my dad", pos: "center 25%" },
+  { src: "photos/03-galaxys-edge.jpg",      alt: "Dominic at Star Wars: Galaxy's Edge", caption: "Somewhere in a galaxy far, far away" },
+  { src: "photos/04-bumblebee.jpg",         alt: "Dominic with Bumblebee",              caption: "Making friends with Bumblebee" },
+  { src: "photos/05-selfie.jpg",            alt: "Dominic selfie",                      caption: "Glasses on, beard in check" },
+  { src: "photos/06-dog.jpg",               alt: "Benji, Dominic's dog, upside down",   caption: "Benji, being Benji" },
+  // { src: "photos/07-new.jpg", alt: "Describe the photo", caption: "Short caption" },
 ];
 
 /* =====================================================================
@@ -352,84 +578,343 @@ const CONTACT = {
   instagram: "applesdg_gio",      // handle without @ ("" to hide)
 };
 
+/* =====================================================================
+   EDIT HERE  ➜  FIRST DATE IDEAS  (tapping one opens a text: "I pick: ...")
+   ===================================================================== */
+const DATES = [
+  { e: "☕", title: "Coffee + a beach walk", desc: "Grab coffee, then walk the beach in Melbourne.", pick: "Coffee + a walk on the beach ☕🌊" },
+  { e: "🍝", title: "Cozy dinner, foodie spot", desc: "Somewhere good to eat and actually talk.", pick: "A cozy dinner at a foodie spot 🍝" },
+  { e: "🛍️", title: "Thrift-store adventure", desc: "We each pick a find for the other. No vetoes.", pick: "A thrift-store adventure 🛍️" },
+];
+
+/* =====================================================================
+   EDIT HERE  ➜  COMPATIBILITY QUIZ
+   pts: 1 = same as me, 0.5 = close enough, 0 = still cute.  r = my reaction.
+   ===================================================================== */
+const QUIZ = [
+  { q: "Bedtime?", a: [
+    { t: "🌙 Early to bed", pts: 1, r: "Same. Sleep quality is a love language." },
+    { t: "🦉 Night owl", pts: 0, r: "I'll be asleep, but I'll text you good morning." } ] },
+  { q: "Dogs or cats?", a: [
+    { t: "🐶 Dogs", pts: 0.5, r: "Benji approves." },
+    { t: "🐱 Cats", pts: 0.5, r: "My cat approves." },
+    { t: "🐾 Both, obviously", pts: 1, r: "Correct answer. Dog/cat dad here." } ] },
+  { q: "Saturday night?", a: [
+    { t: "🛋️ Cozy night in", pts: 1, r: "My favorite kind of Saturday." },
+    { t: "🥂 Out socializing", pts: 0.5, r: "I'm down. I'll be the one who arrives early." } ] },
+  { q: "Best way to reach you?", a: [
+    { t: "💬 Texts", pts: 1, r: "I reply quickly. Phone's always charged." },
+    { t: "📞 Calls", pts: 0.5, r: "Okay, I'll pick up for you." },
+    { t: "☕ In person", pts: 1, r: "Honestly? I'm better in person too." } ] },
+  { q: "Working out?", a: [
+    { t: "💪 Every day", pts: 1, r: "Gym date incoming." },
+    { t: "🏃 A few times a week", pts: 0.5, r: "Solid. I'll be your spotter." },
+    { t: "🧖 Rest days are self-care", pts: 0.5, r: "Respect. Sunday self-care is sacred to me too." } ] },
+];
+const QUIZ_LINES = [ // [min score, line]
+  [100, "Okay, this is suspicious. Are you me? ✨"],
+  [80,  "Written in the stars, apparently. ✨"],
+  [60,  "Strong potential. The rest we figure out over coffee."],
+  [40,  "Opposites attract, right? Now I'm curious."],
+  [0,   "Different is interesting. Curiosity wins. 😏"],
+];
+
 /* Public URL of this page. Leave "" to auto-detect from the address bar
-   (works on any host). Set it to force the share link / QR / vCard URL. */
+   (works on any host). Set it to force the URL written into the vCard. */
 const SITE_URL = "";
 
 /* ---------- render (no need to edit below) ---------- */
-const PLACEHOLDER_SLOTS = 0; // set e.g. 2 to show empty "coming soon" tiles
-const camera = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PHONE = CONTACT.phone.replace(/[^\d+]/g, '');
+/* sms link that works on iOS + Android: sms:+1XXXXXXXXXX?&body=... */
+function smsHref(body){ return 'sms:' + PHONE + (body ? '?&body=' + encodeURIComponent(body) : ''); }
+function safe(name, fn){ try { fn(); } catch (e) { if (window.console) console.warn('[' + name + ']', e); } }
 
-(function hero(){
+/* reveal on scroll (first, so content always becomes visible) */
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), {rootMargin:'0px 0px -8% 0px'}) : null;
+document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
+
+/* ---------- starfield (lightweight canvas) ---------- */
+const Stars = (function(){
+  const cv = document.getElementById('stars'); if (!cv || !cv.getContext) return {};
+  const ctx = cv.getContext('2d'); let W = 0, H = 0, dpr = 1, stars = [], raf = 0, last = 0, lastW = -1;
+  function init(){
+    const w = window.innerWidth, h = Math.max(window.innerHeight, (screen && screen.height) || 0);
+    if (w === lastW && h <= H) return; // ignore mobile URL-bar resizes
+    lastW = w; dpr = Math.min(window.devicePixelRatio || 1, 2); W = w; H = h;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.min(240, Math.round(W * H / 3600)); stars = [];
+    for (let i = 0; i < n; i++) {
+      const big = Math.random() < .08;
+      stars.push({ x: Math.random() * W, y: Math.random() * H, r: big ? 1.1 + Math.random() * .9 : .35 + Math.random() * .75,
+        a: .35 + Math.random() * .6, tw: .4 + Math.random() * 1.6, ph: Math.random() * 6.28,
+        vx: (Math.random() - .5) * .9 + 1.2, vy: (Math.random() - .5) * .5 - .3, warm: Math.random() < .18 });
+    }
+    draw(0);
+  }
+  function draw(t){
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      const al = REDUCED ? s.a : s.a * (.55 + .45 * Math.sin(t * .001 * s.tw + s.ph));
+      ctx.globalAlpha = al; ctx.fillStyle = s.warm ? '#ffd9b0' : '#f3eefe';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.2832); ctx.fill();
+      if (s.r > 1.1) { ctx.globalAlpha = al * .18; ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 3.2, 0, 6.2832); ctx.fill(); }
+    }
+    ctx.globalAlpha = 1;
+  }
+  function frame(t){
+    raf = requestAnimationFrame(frame);
+    if (t - last < 33) return; // ~30fps is plenty
+    const dt = Math.min(100, t - last) / 1000; last = t;
+    for (const s of stars) { // slow drift, wrap around
+      s.x += s.vx * dt * s.r * 2.2; s.y += s.vy * dt * s.r * 2.2;
+      if (s.x > W + 4) s.x = -4; else if (s.x < -4) s.x = W + 4;
+      if (s.y > H + 4) s.y = -4; else if (s.y < -4) s.y = H + 4;
+    }
+    draw(t);
+  }
+  function start(){ if (!REDUCED && !raf && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  function stop(){ cancelAnimationFrame(raf); raf = 0; }
+  init(); start();
+  addEventListener('resize', () => { clearTimeout(init.t); init.t = setTimeout(init, 150); });
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  return { start, stop };
+})();
+
+/* ---------- opening reveal ---------- */
+safe('intro', function(){
+  const root = document.documentElement, el = document.getElementById('intro'), cv = document.getElementById('stars');
+  if (!root.classList.contains('intro')) return;
+  let done = false;
+  function finish(){
+    if (done) return; done = true;
+    el.classList.add('out'); cv.style.opacity = '0';
+    setTimeout(() => { root.classList.remove('intro'); requestAnimationFrame(() => { cv.style.opacity = ''; }); }, 700);
+  }
+  el.addEventListener('click', finish);
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') { e.preventDefault(); finish(); } });
+  setTimeout(finish, REDUCED ? 1300 : 2200);
+});
+
+/* ---------- hero ---------- */
+const camera = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+const PLACEHOLDER_SLOTS = 0; // set e.g. 2 to show empty "coming soon" tiles
+safe('hero', function(){
   const h = document.getElementById('hero'), p = PHOTOS[0];
   let el;
   if (p) { el = new Image(); el.src = p.src; el.alt = p.alt || 'Dominic'; el.fetchPriority = 'high';
            if (p.pos) el.style.objectPosition = p.pos; el.onclick = () => openLb(0); el.style.cursor='zoom-in'; }
   else { el = document.createElement('div'); el.className = 'ph'; el.innerHTML = '<div>' + camera + 'Hero photo coming soon</div>'; }
   h.prepend(el);
-})();
+});
 
-(function gallery(){
+/* ---------- gallery (tiles open the story) ---------- */
+safe('gallery', function(){
   const g = document.getElementById('gallery');
   const rest = PHOTOS.slice(1);
   rest.forEach((p, i) => {
-    const b = document.createElement('button');
+    const b = document.createElement('button'); b.type = 'button';
     b.className = 'g' + ((rest.length % 2 === 1 && i === 0) ? ' wide' : '');
-    b.setAttribute('aria-label', 'Open photo: ' + (p.alt || ''));
+    b.setAttribute('aria-label', 'Open photo story at: ' + (p.caption || p.alt || ''));
     const img = new Image(); img.loading = 'lazy'; img.decoding = 'async'; img.src = p.src; img.alt = p.alt || '';
     if (p.pos) img.style.objectPosition = p.pos;
-    b.appendChild(img); b.onclick = () => openLb(i + 1); g.appendChild(b);
+    b.appendChild(img);
+    if (p.caption) { const c = document.createElement('span'); c.className = 'cap'; c.textContent = p.caption; b.appendChild(c); }
+    b.onclick = () => Story.open(i + 1); g.appendChild(b);
   });
   const empties = rest.length === 0 ? 4 : PLACEHOLDER_SLOTS;
   for (let i = 0; i < empties; i++) {
     const d = document.createElement('div'); d.className = 'g ph'; d.style.cursor = 'default';
     d.innerHTML = '<div>' + camera + 'More photos soon</div>'; g.appendChild(d);
   }
-  if (!rest.length && !empties) document.getElementById('photos').style.display = 'none';
+  const sl = document.querySelector('#story-launch small'); if (sl) sl.textContent = 'Tap or swipe through · ' + PHOTOS.length + ' photos';
+  document.getElementById('story-launch').onclick = () => Story.open(0);
+  if (!PHOTOS.length) document.getElementById('photos').style.display = 'none';
+});
+
+/* ---------- story viewer (Instagram-style) ---------- */
+const Story = (function(){
+  const el = document.getElementById('story'), img = el.querySelector('.st-img'), bg = el.querySelector('.st-bg'), bars = document.getElementById('st-bars'),
+        cap = document.getElementById('st-cap'), cnt = document.getElementById('st-cnt'), hint = document.getElementById('st-hint');
+  const DUR = 5000; let i = 0, t0 = 0, elapsed = 0, raf = 0, paused = false, loading = false, isOpen = false, opener = null, suppress = false;
+  function buildBars(){ bars.innerHTML = PHOTOS.map(() => '<div class="st-bar"><i></i></div>').join(''); }
+  function setBars(frac){ [...bars.children].forEach((b, k) => b.firstChild.style.width = (k < i ? 100 : k > i ? 0 : frac * 100) + '%'); }
+  function show(k){
+    if (k < 0) k = 0;
+    if (k >= PHOTOS.length) { close(); return; }
+    i = k; elapsed = 0; const p = PHOTOS[i];
+    loading = true; img.onload = img.onerror = () => { loading = false; t0 = performance.now(); };
+    img.src = p.src; img.alt = p.alt || ''; bg.style.backgroundImage = 'url("' + p.src + '")';
+    if (img.complete) { loading = false; }
+    cap.textContent = p.caption || ''; cnt.textContent = (i + 1) + ' / ' + PHOTOS.length;
+    if (i > 0) hint.style.display = 'none';
+    t0 = performance.now(); setBars(0);
+    const nx = PHOTOS[i + 1]; if (nx) { const pre = new Image(); pre.src = nx.src; }
+  }
+  function tick(now){
+    raf = requestAnimationFrame(tick);
+    if (paused || loading || document.hidden) { t0 = now - elapsed; return; }
+    elapsed = now - t0; const f = Math.min(1, elapsed / DUR); setBars(f);
+    if (f >= 1) show(i + 1);
+  }
+  function open(k){
+    if (!PHOTOS.length) return;
+    opener = document.activeElement; buildBars(); isOpen = true; paused = false; hint.style.display = '';
+    el.classList.add('open'); document.documentElement.style.overflow = 'hidden';
+    show(k || 0); cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
+    el.querySelector('.st-x').focus({preventScroll:true});
+  }
+  function close(){
+    if (!isOpen) return; isOpen = false; cancelAnimationFrame(raf); raf = 0;
+    el.classList.remove('open'); document.documentElement.style.overflow = '';
+    if (opener && opener.focus) opener.focus({preventScroll:true});
+  }
+  el.querySelector('.st-x').onclick = close;
+  el.querySelector('.st-prev').onclick = () => { if (suppress) return; show(i - 1); };
+  el.querySelector('.st-next').onclick = () => { if (suppress) return; show(i + 1); };
+  /* swipe left/right to navigate, swipe down to close, press-and-hold to pause */
+  let sx = 0, sy = 0, st = 0, down = false, holdT = 0;
+  el.addEventListener('pointerdown', e => {
+    if (e.target.closest('.st-x')) return;
+    down = true; sx = e.clientX; sy = e.clientY; st = Date.now(); suppress = false;
+    holdT = setTimeout(() => { paused = true; }, 260);
+  });
+  el.addEventListener('pointerup', e => {
+    if (!down) return; down = false; clearTimeout(holdT);
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (paused) { paused = false; suppress = true; }
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) { suppress = true; show(i + (dx < 0 ? 1 : -1)); }
+    else if (dy > 80 && dy > Math.abs(dx)) { suppress = true; close(); }
+    if (suppress) setTimeout(() => { suppress = false; }, 350);
+  });
+  el.addEventListener('pointercancel', () => { down = false; clearTimeout(holdT); paused = false; });
+  document.addEventListener('keydown', e => { if (!isOpen) return;
+    if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); });
+  return { open, close, get index(){ return i; }, get isOpen(){ return isOpen; } };
 })();
 
-(function contact(){
+/* ---------- contact buttons ---------- */
+safe('contact', function(){
   const c = document.getElementById('contact-buttons');
-  const digits = CONTACT.phone.replace(/[^\d+]/g, '');
+  const digits = PHONE;
   const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/i.test(ua);
   if (!digits) { c.innerHTML = igBtn() + '<div class="todo-note">Ask me for my number in person 😉</div>'; return; }
-  const smsHref = 'sms:' + digits + (ios ? '&' : '?') + 'body=' + encodeURIComponent(CONTACT.smsBody);
-  c.innerHTML = '<a class="btn primary" href="' + smsHref + '">💬 Text me</a>' +
+  const smsHrefMain = 'sms:' + digits + (ios ? '&' : '?') + 'body=' + encodeURIComponent(CONTACT.smsBody);
+  c.innerHTML = '<a class="btn primary" href="' + smsHrefMain + '">💬 Text me</a>' +
                 '<a class="btn ghost" href="tel:' + digits + '">📞 Call ' + (CONTACT.phoneDisplay || digits) + '</a>' + igBtn();
-})();
+  document.getElementById('signoff-sms').href = smsHref(CONTACT.smsBody);
+});
 function igBtn(){ return CONTACT.instagram ? '<a class="btn ghost ig" target="_blank" rel="noopener" href="https://www.instagram.com/' + encodeURIComponent(CONTACT.instagram) + '/">📸 Instagram @' + CONTACT.instagram + '</a>' : ''; }
 
+/* ---------- Meet Benji: approval meter ---------- */
+safe('benji', function(){
+  const fill = document.getElementById('benji-fill'), pct = document.getElementById('benji-pct'), st = document.getElementById('benji-status'),
+        track = fill.parentElement;
+  const steps = [[0, 'Sniffing…'], [35, 'Considering the treat situation…'], [70, 'Tail wag detected…'], [99.5, 'Preliminary result: approved ✅ Final verdict requires an in-person sniff test.']];
+  let run = 0;
+  function set(v){ fill.style.width = v + '%'; pct.textContent = Math.round(v) + '%'; track.setAttribute('aria-valuenow', Math.round(v)); }
+  function go(){
+    const id = ++run;
+    if (REDUCED) { set(100); st.textContent = steps[3][1]; return; }
+    const T = 2600, s = performance.now();
+    (function f(now){ if (id !== run) return;
+      const k = Math.min(1, (now - s) / T), e = 1 - Math.pow(1 - k, 3), v = e * 100; set(v);
+      let msg = steps[0][1]; steps.forEach(x => { if (v >= x[0]) msg = x[1]; }); if (st.textContent !== msg) st.textContent = msg;
+      if (k < 1) requestAnimationFrame(f);
+    })(s);
+  }
+  document.getElementById('benji-rerun').onclick = () => { set(0); go(); };
+  const m = document.getElementById('benji-meter');
+  if ('IntersectionObserver' in window) { const o = new IntersectionObserver(es => { if (es[0].isIntersecting) { o.disconnect(); go(); } }, {threshold:.6}); o.observe(m); }
+  else go();
+});
 
-/* ---------- share / QR / vCard ---------- */
+/* ---------- Two truths and a lie (no spoilers) ---------- */
+safe('ttl', function(){
+  const opts = [...document.querySelectorAll('.ttl-opt')], res = document.getElementById('ttl-res'),
+        line = document.getElementById('ttl-line'), sms = document.getElementById('ttl-sms'), hint = document.getElementById('ttl-hint');
+  const openers = ['Bold guess.', 'Interesting choice.', 'Ooh, risky.'];
+  opts.forEach((b, k) => b.addEventListener('click', () => {
+    opts.forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+    const n = b.dataset.n, txt = b.querySelector('.txt').textContent;
+    line.textContent = openers[k % openers.length] + " Text me your answer and I'll tell you if you're right 😉";
+    sms.href = smsHref('Two truths & a lie: I think the lie is #' + n + ' (' + txt + ')');
+    res.hidden = false; hint.hidden = true;
+    res.style.animation = 'none'; void res.offsetWidth; res.style.animation = '';
+  }));
+  document.getElementById('ttl-reset').onclick = () => { opts.forEach(o => o.setAttribute('aria-pressed', 'false')); res.hidden = true; hint.hidden = false; opts[0].focus(); };
+});
+
+/* ---------- flip cards ---------- */
+safe('flips', function(){
+  document.querySelectorAll('.flip').forEach(b => b.addEventListener('click', () =>
+    b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true')));
+});
+
+/* ---------- compatibility quiz ---------- */
+safe('quiz', function(){
+  const box = document.getElementById('quiz'); let step = 0, total = 0, busy = false;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function prog(){ return '<div class="q-prog" aria-hidden="true">' + QUIZ.map((_, k) => '<i class="' + (k < step ? 'on' : '') + '"></i>').join('') + '</div>'; }
+  function render(){
+    busy = false;
+    if (step >= QUIZ.length) return result();
+    const q = QUIZ[step];
+    box.innerHTML = prog() + '<div class="q-anim"><div class="q-step">Question ' + (step + 1) + ' of ' + QUIZ.length + '</div>' +
+      '<div class="q-q">' + esc(q.q) + '</div><div class="q-opts">' +
+      q.a.map((a, k) => '<button type="button" class="q-opt" data-k="' + k + '">' + esc(a.t) + '</button>').join('') +
+      '</div><div class="q-react" aria-live="polite"></div></div>';
+    box.querySelectorAll('.q-opt').forEach(b => b.onclick = () => {
+      if (busy) return; busy = true;
+      const a = q.a[+b.dataset.k]; total += a.pts; b.classList.add('picked');
+      box.querySelector('.q-react').textContent = a.r;
+      setTimeout(() => { step++; render(); }, REDUCED ? 900 : 1100);
+    });
+  }
+  function result(){
+    const score = Math.round(total / QUIZ.length * 100);
+    let txt = QUIZ_LINES[QUIZ_LINES.length - 1][1]; for (const [min, l] of QUIZ_LINES) { if (score >= min) { txt = l; break; } }
+    box.innerHTML = prog() + '<div class="q-result q-anim"><div class="q-step">Our compatibility</div>' +
+      '<div class="q-score"><span id="q-num">0</span><small>%</small></div><div class="q-line">' + esc(txt) + '</div>' +
+      '<a class="btn primary" id="q-sms" href="' + smsHref('I took your compatibility quiz: we\'re ' + score + '% compatible 😏') + '">💬 Text me your score</a>' +
+      '<button type="button" class="linkbtn" id="q-again">Retake the quiz</button></div>';
+    box.dataset.score = score;
+    const num = document.getElementById('q-num');
+    if (REDUCED) num.textContent = score;
+    else { const s = performance.now(); (function f(now){ const k = Math.min(1, (now - s) / 1000); num.textContent = Math.round(score * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(s); }
+    document.getElementById('q-again').onclick = () => { step = 0; total = 0; render(); box.querySelector('.q-opt').focus(); };
+  }
+  render();
+});
+
+/* ---------- first date picker ---------- */
+safe('dates', function(){
+  const list = document.getElementById('date-list');
+  DATES.forEach(d => {
+    const a = document.createElement('a'); a.className = 'date'; a.href = smsHref('I pick: ' + d.pick);
+    a.setAttribute('aria-label', 'Pick ' + d.title + ' (opens a text to Dominic)');
+    a.innerHTML = '<span class="e" aria-hidden="true"></span><span><b></b><small></small></span><span class="go" aria-hidden="true">Pick →</span>';
+    a.querySelector('.e').textContent = d.e; a.querySelector('b').textContent = d.title; a.querySelector('small').textContent = d.desc;
+    a.addEventListener('click', () => { list.querySelectorAll('.date').forEach(x => x.classList.toggle('sel', x === a)); });
+    list.appendChild(a);
+  });
+});
+
+/* ---------- Spotify (lazy-loaded) ---------- */
+safe('spotify', function(){
+  const box = document.getElementById('sp-embed'); let done = false;
+  function load(){ if (done) return; done = true;
+    const f = document.createElement('iframe'); f.src = box.dataset.src; f.loading = 'lazy'; f.title = 'Spotify player: Drew Barrymore by Bryce Vine';
+    f.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'; f.setAttribute('allowfullscreen', '');
+    box.textContent = ''; box.appendChild(f); }
+  if ('IntersectionObserver' in window) { const o = new IntersectionObserver(es => { if (es[0].isIntersecting) { o.disconnect(); load(); } }, {rootMargin:'400px 0px'}); o.observe(box); }
+  else load();
+});
+
+/* ---------- vCard ---------- */
 const PAGE_URL = (SITE_URL || (location.origin + location.pathname.replace(/index\.html$/, ''))).trim();
-const SHARE = { title: "Dominic", text: "Dominic's profile (Melbourne, FL)", url: PAGE_URL };
 const toastEl = document.getElementById('toast');
 function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => toastEl.classList.remove('show'), 2200); }
-async function copyLink(){
-  try { await navigator.clipboard.writeText(PAGE_URL); toast('Link copied ✓'); }
-  catch(e){ const t = document.createElement('textarea'); t.value = PAGE_URL; document.body.appendChild(t); t.select();
-    try { document.execCommand('copy'); toast('Link copied ✓'); } catch(_) { prompt('Copy this link:', PAGE_URL); } t.remove(); }
-}
-async function shareProfile(){
-  if (navigator.share) {
-    try { await navigator.share(SHARE); return; }
-    catch(e){ if (e && e.name === 'AbortError') return; }
-  }
-  await copyLink();
-  document.getElementById('share').scrollIntoView({behavior:'smooth', block:'center'});
-}
-document.querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', shareProfile));
-document.querySelector('.share-hints span:last-child').style.cursor = 'pointer';
-document.querySelector('.share-hints span:last-child').addEventListener('click', copyLink);
-document.getElementById('share-url').textContent = PAGE_URL.replace(/^https?:\/\//, '');
-
-(function renderQR(){
-  const box = document.getElementById('qr');
-  if (typeof qrcode !== 'function') { box.style.display = 'none'; return; }
-  const q = qrcode(0, 'H'); q.addData(PAGE_URL); q.make();
-  box.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
-})();
-
 function vEsc(v){ return String(v).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/([,;])/g,'\\$1'); }
 function buildVCard(){
   const tel = CONTACT.phone.replace(/[^\d+]/g, '');
@@ -460,7 +945,7 @@ document.getElementById('save-contact').addEventListener('click', () => {
   toast('Contact downloaded. Tap it to add');
 });
 
-/* lightbox */
+/* lightbox (hero photo tap) */
 const lb = document.getElementById('lb'), lbImg = lb.querySelector('img'); let cur = 0;
 function openLb(i){ if(!PHOTOS.length) return; cur = (i + PHOTOS.length) % PHOTOS.length; lbImg.src = PHOTOS[cur].src; lbImg.alt = PHOTOS[cur].alt || ''; lb.classList.add('open'); }
 function closeLb(){ lb.classList.remove('open'); }
@@ -472,10 +957,6 @@ document.addEventListener('keydown', e => { if (!lb.classList.contains('open')) 
   if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') openLb(cur - 1); if (e.key === 'ArrowRight') openLb(cur + 1); });
 let sx = null; lb.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
 lb.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) openLb(cur + (dx < 0 ? 1 : -1)); sx = null; });
-
-/* reveal on scroll */
-const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), {rootMargin:'0px 0px -8% 0px'}) : null;
-document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
 </script>
 </body>
 </html>
