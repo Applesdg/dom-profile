@@ -206,16 +206,17 @@ ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
 .todo-note{font-size:13px;color:var(--muted);margin-top:10px}
 main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for the floating Text me bubble */
 
-/* FLOATING TEXT ME BUBBLE (hidden during the intro and while the easter egg is open) */
-.fab-sms{position:fixed;z-index:45;right:max(16px,calc(env(safe-area-inset-right) + 12px),calc((100vw - 560px) / 2 + 18px));bottom:calc(16px + env(safe-area-inset-bottom));
+/* FLOATING INSTAGRAM BUBBLE (hidden during the intro and while the easter egg is open) */
+.fab-ig{position:fixed;z-index:45;right:max(16px,calc(env(safe-area-inset-right) + 12px),calc((100vw - 560px) / 2 + 18px));bottom:calc(16px + env(safe-area-inset-bottom));
   display:inline-flex;align-items:center;gap:8px;padding:13px 20px 13px 17px;border-radius:999px;text-decoration:none;font-weight:700;font-size:16px;line-height:1;color:#1a120c;
   background:linear-gradient(135deg,#f2c391,var(--accent) 45%,var(--accent2));border:1px solid rgba(255,236,210,.55);
   box-shadow:0 12px 28px -10px rgba(0,0,0,.85),0 0 22px rgba(232,176,122,.45),0 0 0 4px rgba(143,107,255,.18);
   transition:opacity .45s ease,transform .45s ease,visibility 0s linear 0s;-webkit-tap-highlight-color:transparent}
-.fab-sms:active{transform:scale(.96)}
-.fab-sms .ic{font-size:18px}
-.intro .fab-sms,.egg-open .fab-sms{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s}
-.egg-open .fab-sms{transition:none} /* the overlay is on top anyway: hide instantly */
+.fab-ig:active{transform:scale(.96)}
+.fab-ig .ic{flex:none;display:block}
+.fab-ig .lbl{letter-spacing:.01em}
+.intro .fab-ig,.egg-open .fab-ig{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s}
+.egg-open .fab-ig{transition:none} /* the overlay is on top anyway: hide instantly */
 
 /* VOICE INTRO (hidden until VOICE_INTRO is set and audio/hi.mp3 exists) */
 .hi-btn{display:inline-flex;align-items:center;gap:10px;margin:12px 0 0;background:var(--card);border:1px solid rgba(232,176,122,.45);border-radius:999px;padding:8px 16px 8px 8px;font-size:15px;font-weight:600;cursor:pointer}
@@ -283,6 +284,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .tot-res{text-align:center;animation:pop .35s ease}
 .tot-big{font-family:var(--serif);font-size:66px;line-height:1;color:var(--accent);text-shadow:0 0 30px rgba(232,176,122,.45);margin-top:4px}
 .tot-big small{font-size:30px;color:var(--muted)}
+.tot-res.perfect .tot-big{text-shadow:0 0 30px rgba(232,176,122,.55),0 0 60px rgba(143,107,255,.55)}
 .tot-line{font-family:var(--serif);font-size:20px;margin:8px 0 12px}
 .tot-recap{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 16px;text-align:left}
 .tot-recap li{font-size:13.5px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:7px 9px;line-height:1.25}
@@ -369,7 +371,7 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
   .adv-bar{display:none}
   .adv-row{justify-content:flex-end}
   .twk{animation-duration:.5s}
-  .fab-sms,.intro .fab-sms,.egg-open .fab-sms{transform:none}
+  .fab-ig,.intro .fab-ig,.egg-open .fab-ig{transform:none}
 }
 </style>
 </head>
@@ -669,8 +671,8 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<!-- Floating Text me bubble (href is rebuilt from CONTACT by the script) -->
-<a class="fab-sms" id="fab-sms" href="sms:+18172179760?&amp;body=Hey%20Dominic!%20We%20met%20and%20I%20scanned%20your%20card%20%F0%9F%99%82" aria-label="Text Dominic"><span class="ic" aria-hidden="true">💬</span>Text me</a>
+<!-- Floating Instagram bubble (href is rebuilt from CONTACT.instagram by the script) -->
+<a class="fab-ig" id="fab-ig" href="https://www.instagram.com/applesdg_gio/" target="_blank" rel="noopener" aria-label="Instagram link (opens in a new tab)"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"/></svg><span class="lbl">Instagram link</span></a>
 
 <div class="egg" id="egg" role="dialog" aria-modal="true" aria-labelledby="egg-t">
   <div class="egg-card">
@@ -748,32 +750,32 @@ const DATES = [
    both = optional label for a third "both" button.  cat = small label on the card.
    say = the reply shown for each answer: { a: "...", b: "...", both: "..." } (✓/✗ match mark is added automatically).
    ===================================================================== */
-const THIS_OR_THAT = [
-  { cat: "Dinner",           a: ["🌮", "Tacos"],         b: ["🍣", "Sushi"],            dom: "a",
-    say: { a: "Taco Tuesday is every day if you try hard enough. 🌮",
-           b: "Sushi? Cool. Fewer tacos for me to steal from you. 🍣" } },
-  { cat: "Alarm clock",      a: ["🐦", "Early bird"],    b: ["🦉", "Night owl"],        dom: "a",
-    say: { a: "See you at sunrise. I'll bring the coffee. ☀️",
-           b: "Night owl, huh? I'll leave the porch light on… until 9. 🦉" } },
-  { cat: "Pets",             a: ["🐶", "Dogs"],          b: ["🐱", "Cats"],             dom: "any", both: "🐾 Why not both?",
-    say: { a: "Benji just wagged. You're in. 🐶",
+const THIS_OR_THAT = [   // easy on purpose: the right pick is obvious from the page (or just obviously the fun one)
+  { cat: "Dinner",      a: ["🌮", "Tacos"],         b: ["🥗", "A sad desk salad"],  dom: "a",
+    say: { a: "Correct. You clearly read the red flags. 🌮",
+           b: "A sad salad? We need to talk. Over tacos. 🥗" } },
+  { cat: "Best dog",    a: ["🐶", "Benji"],         b: ["🐕", "Some other dog"],    dom: "a",
+    say: { a: "Benji has been notified. He's thrilled. 🐶",
+           b: "Benji saw that. HR will be in touch. 📝" } },
+  { cat: "Pets",        a: ["🐶", "Dogs"],          b: ["🐱", "Cats"],              dom: "any", both: "🐾 Why not both?",
+    say: { a: "Good answer. The cat will pretend not to care. 🐶",
            b: "The cat approves. Benji is still processing. 🐱",
            both: "Correct answer. You've clearly done this before. 🐾" } },
-  { cat: "Getaway",          a: ["🏖️", "Beach"],         b: ["🏔️", "Mountains"],        dom: "b",
-    say: { a: "Beach it is. I'm packing hiking boots anyway. 🏖️",
-           b: "Mountain people unite. Altitude and attitude. ⛰️" } },
-  { cat: "Date night",       a: ["🗓️", "Plan the date"], b: ["🎲", "Go with the flow"], dom: "a",
-    say: { a: "A fellow planner. We'll have an itinerary by date two. 📋",
-           b: "Perfect. I'll plan, you flow. 🌊" } },
-  { cat: "Getting to know you", a: ["📱", "Text"],       b: ["🤝", "In person"],        dom: "b",
-    say: { a: "Texting's fine, but my jokes land better in person. 📱",
-           b: "Eye contact over emojis. Love that for us. 👀" } },
-  { cat: "Wardrobe",         a: ["👕", "Hoodie"],        b: ["👔", "Blazer"],           dom: "a",  // GUESS: from "I like to dress down"
-    say: { a: "Comfort over everything. Hoodie gang. 🧥",
-           b: "A blazer? Look at you. I'll iron something. 👔" } },
-  { cat: "Movie marathon",   a: ["⚡", "Harry Potter"],  b: ["🦸", "Marvel"],           dom: "b",
-    say: { a: "Harry Potter, huh? I'm a Slytherin, so this could get interesting. 🪄",
-           b: "Assemble. I call dibs on picking the first movie. 🦸" } },
+  { cat: "After this",  a: ["💬", "Text me"],       b: ["👻", "Ghost me"],          dom: "a",
+    say: { a: "Smart. The button's right there. 💬",
+           b: "Bold. The stars will remember this. 🌌" } },
+  { cat: "First date",  a: ["📋", "Planned by me"], b: ["🤷", "Planned by nobody"], dom: "a",
+    say: { a: "Exactly. I'll plan it, you just show up. 📋",
+           b: "Nobody? Chaos. I love it. I'm still planning. 😅" } },
+  { cat: "Curiosity",   a: ["✨", "Wins"],          b: ["📉", "Loses"],             dom: "a",
+    say: { a: "Obviously. That's why you're here. ✨",
+           b: "Then how'd you end up on this page? 🤔" } },
+  { cat: "Movie night", a: ["🦸", "Marvel"],        b: ["🎨", "Watching paint dry"], dom: "a",
+    say: { a: "Assemble. I call dibs on picking the first movie. 🦸",
+           b: "Paint drying? Okay, I'll bring snacks anyway. 🎨" } },
+  { cat: "Getaway",     a: ["🏔️", "Mountains"],     b: ["✈️", "A 6-hour layover"],  dom: "a",
+    say: { a: "Mountain people unite. Altitude and attitude. ⛰️",
+           b: "A layover? You're a mystery. I respect it. ✈️" } },
 ];
 
 /* =====================================================================
@@ -1003,14 +1005,18 @@ safe('contact', function(){
   c.innerHTML = '<a class="btn primary" href="' + smsHrefMain + '">💬 Text me</a>' +
                 '<a class="btn ghost" href="tel:' + digits + '">📞 Call ' + (CONTACT.phoneDisplay || digits) + '</a>' + igBtn();
 });
-/* floating Text me bubble: same sms format as the rest of the page */
+/* floating Instagram bubble (same profile URL as the contact card's Instagram button) */
 safe('fab', function(){
-  const f = document.getElementById('fab-sms');
-  if (!PHONE) { f.remove(); return; }
-  f.href = smsHref(CONTACT.smsBody);
-  const r = document.getElementById('reach-sms'); if (r) r.href = smsHref(CONTACT.smsBody);
+  const f = document.getElementById('fab-ig');
+  if (!CONTACT.instagram) { f.remove(); return; }
+  f.href = igUrl();
 });
-function igBtn(){ return CONTACT.instagram ? '<a class="btn ghost ig" target="_blank" rel="noopener" href="https://www.instagram.com/' + encodeURIComponent(CONTACT.instagram) + '/">📸 Instagram @' + CONTACT.instagram + '</a>' : ''; }
+/* reach-me "text me" link: same sms format as the rest of the page */
+safe('reachSms', function(){
+  const r = document.getElementById('reach-sms'); if (r && PHONE) r.href = smsHref(CONTACT.smsBody);
+});
+function igUrl(){ return 'https://www.instagram.com/' + encodeURIComponent(CONTACT.instagram) + '/'; }
+function igBtn(){ return CONTACT.instagram ? '<a class="btn ghost ig" target="_blank" rel="noopener" href="' + igUrl() + '">📸 Instagram @' + CONTACT.instagram + '</a>' : ''; }
 
 /* ---------- Meet Benji: approval meter ---------- */
 safe('benji', function(){
@@ -1183,10 +1189,10 @@ safe('thisOrThat', function(){
   }
   function result(){
     const hits = THIS_OR_THAT.reduce((n, r, k) => n + (isHit(r, picks[k]) ? 1 : 0), 0);
-    const line = hits === N ? 'Same picks, every round. Spooky. 🌌' : hits >= N - 2 ? 'Basically the same wavelength.'
-               : hits >= N / 2 ? 'Half twins. The other half is the fun part.' : 'We disagree on almost everything. Great debate material. 😏';
+    const line = hits === N ? N + '/' + N + '. Obviously. Text me your score.' : hits === N - 1 ? 'So close. One rogue answer. 😏'
+               : hits >= N / 2 ? 'Interesting choices. We should talk. 🤔' : 'Bold strategy. Now explain yourself. 😅';
     box.dataset.score = hits;
-    box.innerHTML = '<div class="tot-res"><div class="tot-top"><span>Final tally</span>' + dots() + '</div>' +
+    box.innerHTML = '<div class="tot-res' + (hits === N ? ' perfect' : '') + '"><div class="tot-top"><span>Final tally</span>' + dots() + '</div>' +
       '<div class="tot-big"><span id="tot-num">' + hits + '</span><small>/' + N + '</small></div><div class="tot-line">' + esc(line) + '</div>' +
       '<div class="tot-recap-h">My picks</div><ul class="tot-recap">' + THIS_OR_THAT.map((r, k) => '<li class="' + (isHit(r, picks[k]) ? 'hit' : 'miss') + '">' +
         esc(domLabel(r)) + '<b>' + (isHit(r, picks[k]) ? '✓' : '✗') + '</b></li>').join('') + '</ul>' +
