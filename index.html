@@ -87,6 +87,14 @@ p+p{margin-top:10px}
 .chip{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:14px}
 section>.chips .chip{background:var(--card)}
 .chip.hl{border-color:rgba(232,176,122,.5);color:var(--accent)}
+/* love languages: ranked list with descending bars */
+.ll{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:10px}
+.ll li{display:grid;grid-template-columns:24px 1fr;column-gap:11px;align-items:center}
+.ll .r{grid-row:span 2;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11.5px var(--sans);color:#1a120c;background:var(--accent);opacity:var(--o,1)}
+.ll .t{font-size:15px;line-height:1.2}
+.ll li:first-child .t{color:var(--accent);font-weight:600}
+.ll .bar{display:block;height:5px;margin-top:6px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.ll .bar::before{content:"";display:block;height:100%;width:var(--w);border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--violet));box-shadow:0 0 10px rgba(232,176,122,.35)}
 ul.clean{list-style:none;display:grid;gap:8px}
 ul.clean li{display:flex;gap:10px;align-items:flex-start}
 ul.clean li b{color:var(--accent);font-weight:600;min-width:1.2em}
@@ -219,6 +227,13 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 .egg-open .fab-ig{transition:none} /* the overlay is on top anyway: hide instantly */
 
 /* VOICE INTRO (hidden until VOICE_INTRO is set and audio/hi.mp3 exists) */
+/* "Currently" status pill (text = CURRENTLY in the script) */
+.now{display:flex;align-items:center;gap:8px;width:fit-content;max-width:100%;margin:10px 0 2px;padding:6px 13px 6px 11px;border-radius:999px;background:rgba(232,176,122,.07);border:1px solid rgba(232,176,122,.26);font-size:13.5px;line-height:1.35;color:#e6dce8}
+.now[hidden]{display:none}
+.now .now-k{color:var(--accent);font-weight:600}
+.now .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent);animation:nowPulse 2.4s ease-out infinite}
+@keyframes nowPulse{0%{box-shadow:0 0 0 0 rgba(232,176,122,.55)}70%,100%{box-shadow:0 0 0 7px rgba(232,176,122,0)}}
+@media (prefers-reduced-motion:reduce){.now .dot{animation:none;box-shadow:0 0 0 3px rgba(232,176,122,.18)}}
 .hi-btn{display:inline-flex;align-items:center;gap:10px;margin:12px 0 0;background:var(--card);border:1px solid rgba(232,176,122,.45);border-radius:999px;padding:8px 16px 8px 8px;font-size:15px;font-weight:600;cursor:pointer}
 .hi-btn[hidden]{display:none}
 .hi-btn .ic{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#1a120c;display:grid;place-items:center;font-size:12px}
@@ -403,6 +418,8 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
       <span class="fact"><i>📍</i>Melbourne, FL</span>
       <span class="fact"><i>🎓</i>Bachelor's degree</span>
     </div>
+    <!-- "Currently" status: edit CURRENTLY at the top of the script (this text is the no-JS fallback) -->
+    <p class="now" id="now"><span class="dot" aria-hidden="true"></span><span><span class="now-k">Currently:</span> <span id="now-txt">at the gym 💪</span></span></p>
     <!-- Voice intro: stays hidden until VOICE_INTRO is set in the script (and audio/hi.mp3 exists) -->
     <button class="hi-btn" type="button" id="hi-btn" hidden><span class="ic" aria-hidden="true">▶</span><span class="lbl">Hear me say hi</span></button>
 
@@ -509,6 +526,15 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
         <span class="chip hl">Loyalty</span><span class="chip hl">Energy</span><span class="chip hl">Curiosity</span>
         <span class="chip hl">An INTJ match</span><span class="chip hl">Intellectually stimulating</span>
       </div>
+
+      <h3>My love languages</h3>
+      <ol class="ll" id="love-langs" aria-label="My love languages, ranked from most to least">
+        <li style="--w:100%"><span class="r">1</span><span class="t">Physical touch</span><span class="bar" aria-hidden="true"></span></li>
+        <li style="--w:82%;--o:.88"><span class="r">2</span><span class="t">Quality time</span><span class="bar" aria-hidden="true"></span></li>
+        <li style="--w:64%;--o:.76"><span class="r">3</span><span class="t">Words of affirmation</span><span class="bar" aria-hidden="true"></span></li>
+        <li style="--w:46%;--o:.64"><span class="r">4</span><span class="t">Acts of service</span><span class="bar" aria-hidden="true"></span></li>
+        <li style="--w:28%;--o:.52"><span class="r">5</span><span class="t">Gifts</span><span class="bar" aria-hidden="true"></span></li>
+      </ol>
 
       <h3>We'll click if you</h3>
       <div class="chips" id="click-if"><span class="chip">Talk things through</span><span class="chip">Love a real conversation</span><span class="chip">Laugh easily</span></div>
@@ -704,6 +730,9 @@ main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* room for t
 </div>
 
 <script>
+/* EDIT HERE  ➜  "Currently" status pill under the hero chips. Set to '' to hide it. */
+const CURRENTLY = 'at the gym 💪';
+
 /* =====================================================================
    EDIT HERE  ➜  PHOTOS
    - Drop image files into the photos/ folder, then list them below.
@@ -791,16 +820,16 @@ const ASK_BENJI = [
 ];
 
 /* =====================================================================
-   EDIT HERE  ➜  SPACE COAST DATE MAP  (placeholder spots: swap in your real favorites)
+   EDIT HERE  ➜  SPACE COAST DATE MAP  (my real favorite spots; the map zooms to fit every pin)
    lat/lng: right-click a spot in Google Maps → click the numbers to copy them.
    e = pin emoji, idea = one-line date idea (also used in the text message).
    ===================================================================== */
 const MAP_SPOTS = [
-  { name: "Paradise Beach Park",        lat: 28.1232, lng: -80.5755, e: "🌊", idea: "Catch the sunrise, then grab breakfast nearby." },
-  { name: "Melbourne Beach Pier",       lat: 28.0684, lng: -80.5669, e: "🌅", idea: "Watch the sunset over the Indian River from the old pier." },
-  { name: "Historic Downtown Melbourne", lat: 28.0783, lng: -80.6078, e: "🍝", idea: "Stroll New Haven Ave and pop into the shops." },
-  { name: "Eau Gallie Arts District",   lat: 28.1290, lng: -80.6262, e: "🎨", idea: "Mural hunt, then the riverfront at Ballard Park." },
-  { name: "Brevard Zoo",                lat: 28.2255, lng: -80.7146, e: "🦒", idea: "Feed the giraffes, then kayak through the zoo." },
+  { name: "Del's Freez",          lat: 28.1147, lng: -80.6208, e: "🍦", idea: "Soft serve run, then a slow drive with the windows down." },
+  { name: "Brevard Zoo",          lat: 28.2255, lng: -80.7146, e: "🦒", idea: "Feed the giraffes, then kayak through the zoo." },
+  { name: "Canova Dog Beach",     lat: 28.1383, lng: -80.5797, e: "🐕", idea: "Bring Benji, splash around, watch the boats go by." },
+  { name: "Wickham Park",         lat: 28.1645, lng: -80.6637, e: "🌳", idea: "Picnic and a walk around the lakes." },
+  { name: "Kennedy Space Center", lat: 28.5243, lng: -80.6819, e: "🚀", idea: "Space day: rockets, a real shuttle, and a lot of looking up." },
 ];
 
 /* =====================================================================
@@ -911,6 +940,12 @@ safe('hero', function(){
 });
 
 /* ---------- gallery (tiles open the story) ---------- */
+safe('currently', function(){
+  const el = document.getElementById('now'), t = String(CURRENTLY || '').trim();
+  if (!el) return;
+  if (!t) { el.hidden = true; return; }
+  document.getElementById('now-txt').textContent = t;
+});
 safe('gallery', function(){
   const g = document.getElementById('gallery');
   const rest = PHOTOS.slice(1);

@@ -21,10 +21,14 @@ Phone, Instagram, and SMS greeting live in the `CONTACT` object ("EDIT HERE ➜ 
 - `THIS_OR_THAT` – "This or that" rounds: options, my pick (`dom`), and the witty reply for each answer (`say`). `READ_MS` sets how long each reply stays up.
 - Spotify track: `0JvUjekRwmDcQq4S0Sxocf` (Drew Barrymore, Bryce Vine) in the anthem section
 - `ASK_BENJI` – "Ask Benji" preset questions + Benji's answers (optional `sms` adds a Text button)
-- `MAP_SPOTS` – Space Coast date map pins (name, lat/lng, emoji, one-line idea). **Placeholders** – swap in real favorites.
+- `MAP_SPOTS` – Space Coast date map pins (name, lat/lng, emoji, one-line idea): Del's Freez, Brevard Zoo, Canova Dog Beach, Wickham Park, Kennedy Space Center.
+  The map zooms to fit all pins automatically.
   Get lat/lng by right-clicking a spot in Google Maps and clicking the coordinates to copy them.
 - Green/red flags are plain HTML in the `#flags` section.
 - `VOICE_INTRO` – see below.
+- `CURRENTLY` – the "● Currently: …" status pill under the hero chips. It's the first line of the main script:
+  `const CURRENTLY = 'at the gym 💪';` – change the text (emoji welcome), or set it to `''` to hide the pill.
+  (Also update the fallback text in `<span id="now-txt">` if you want visitors without JavaScript to see the same thing.)
 
 ## Voice intro ("Hear me say hi")
 The button is hidden until you turn it on:
