@@ -1203,48 +1203,161 @@ safe('thisOrThat', function(){
   render();
 });
 
-/* ---------- private visit counters ----------
-   No cookies, no personal data, no fingerprinting, nothing shown on the page.
+/* ---------- private visit counters + anonymous engagement ----------
+   No cookies, no IP/location lookups, no fingerprinting, no names, nothing typed, nothing shown on the page.
    - Total visits: one hit per browser session (unchanged since Oct 7).
-   - Per device: an anonymous random ID in localStorage ('cw_dev') drives "unique visitors", "came back" (2nd session)
-     and "repeat visits" (every session after the first), plus one tiny record per device (short ID, visits, first/last day)
-     that only that device can update (it keeps the record's own key; it can't touch anything else).
-   Skips automated browsers (tests/bots) and devices that opted out on the private stats page. */
+   - Per device: an anonymous random ID in localStorage ('cw_dev') drives "unique", "came back", "repeat" and a few
+     small records that only this device can update (it keeps those records' own keys; it can't touch anything else):
+       v-…-n     short ID, visits, first/last day
+       e-…-n-p   device class / OS / browser-or-app (coarse, from the user agent), first arrival, sections reached, max scroll, total time
+       e-…-n-g   games + buttons tapped (totals for the device)
+       e-…-n-s   one per visit (s = 1, 2, 3…): local hour + weekday, arrival, time on page, scroll, that visit's games/taps
+   Writes are batched and sent when the page is hidden/closed (keepalive fetch, sendBeacon fallback) or every 15 s if
+   something changed. Skips automated browsers (tests/bots) and devices that opted out on the private stats page. */
 const CW_API = 'https://abacus.jasoncameron.dev', CW_NS = 'applesdg-dom-profile', CW_TAG = 'e5d47b2cac';
 const COUNTER_HIT = CW_API + '/hit/' + CW_NS + '/scans-' + CW_TAG;
 const CW_DAY0 = Date.UTC(2026, 0, 1);
 function cwDay(){ const d = new Date(); return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - CW_DAY0) / 864e5); }
 /* record = 16-bit ID, first day, last day (12 bits each, days since 2026-01-01), visits (13 bits): 53 bits, exact in JS */
 function cwPack(id, first, last, visits){ return ((id * 4096 + Math.min(first, 4095)) * 4096 + Math.min(last, 4095)) * 8192 + Math.min(visits, 8191); }
+/* field layouts (bits), shared with the stats page */
+const CW_P = [['dc',2],['os',3],['br',4],['ar',4],['sec',16],['sc',4],['tt',14]];
+const CW_G = [['tb',4],['tp',3],['tg',2],['bq',3],['dp',3],['mp',3],['eg',1],['tap',4],['src',8]];
+const CW_V = [['hr',5],['wd',3],['ar',4],['tm',3],['sc',4],['dz',4],['tb',4],['tg',2],['bq',3],['dp',3],['mp',3],['eg',1],['tap',4]];
+const CW_SECS = ['looking','photos','benji','ask-benji','this-or-that','dates','map-sec','about','basics','into','out-about','prompts','flags','flips','anthem','contact'];
+function cwPackF(layout, o){ return layout.reduce((acc, [k, b]) => acc * 2 ** b + Math.max(0, Math.min(Math.floor(o[k] || 0), 2 ** b - 1)), 0); }
+function cwEnv(){   // coarse device / OS / browser-or-app / arrival (user agent + referrer domain only)
+  const ua = navigator.userAgent || '', touchMac = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+  const os = /iPhone|iPad|iPod/.test(ua) || touchMac ? 1 : /Android/.test(ua) ? 2 : /Windows/.test(ua) ? 3 : /CrOS/.test(ua) ? 5 : /Mac OS X|Macintosh/.test(ua) ? 4 : /Linux/.test(ua) ? 6 : 0;
+  const dc = /iPad|Tablet/.test(ua) || touchMac || (os === 2 && !/Mobile/.test(ua)) ? 2 : /Mobi|iPhone|iPod|Android/.test(ua) ? 1 : 3;
+  const br = /Instagram/.test(ua) ? 6 : /FBAN\/Messenger|MessengerForiOS|FB_IAB\/Orca/.test(ua) ? 8 : /FBAN|FBAV|FB_IAB/.test(ua) ? 7 : /musical_ly|TikTok|BytedanceWebview/.test(ua) ? 9
+    : /Snapchat/.test(ua) ? 10 : /LinkedInApp/.test(ua) ? 11 : /GSA\//.test(ua) ? 12 : /SamsungBrowser/.test(ua) ? 5 : /EdgA?\/|EdgiOS/.test(ua) ? 4 : /Firefox|FxiOS/.test(ua) ? 3
+    : /CriOS|Chrome\//.test(ua) ? 2 : /Safari/.test(ua) ? 1 : 0;
+  let host = ''; try { host = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
+  const ar = br === 6 || /(^|\.)instagram\.com$/.test(host) ? 2 : br === 7 || br === 8 || /(^|\.)(facebook\.com|fb\.com|messenger\.com)$/.test(host) ? 3
+    : br === 9 || /(^|\.)tiktok\.com$/.test(host) ? 4 : br === 10 || /(^|\.)snapchat\.com$/.test(host) ? 5 : /(^|\.)(t\.co|x\.com|twitter\.com)$/.test(host) ? 6
+    : br === 11 || /(^|\.)(linkedin\.com|lnkd\.in)$/.test(host) ? 7 : /(^|\.)(google\.[a-z.]+|bing\.com|duckduckgo\.com|search\.yahoo\.com)$/.test(host) ? 8
+    : host && host !== location.hostname ? 9 : 1;   // 1 = direct: QR scan, texted/shared link, typed or bookmarked (can't be told apart)
+  return { dc, os, br, ar };
+}
 safe('counter', function(){
   if (navigator.webdriver) return;
-  let dev;
+  let dev, fresh;
   try {
-    if (localStorage.getItem('cw_nocount') || sessionStorage.getItem('cw_counted')) return;
-    sessionStorage.setItem('cw_counted', '1');
+    if (localStorage.getItem('cw_nocount')) return;
+    fresh = !sessionStorage.getItem('cw_counted');
+    if (fresh) sessionStorage.setItem('cw_counted', '1');
     dev = JSON.parse(localStorage.getItem('cw_dev') || 'null');
   } catch (e) { return; }
   const base = { mode: 'cors', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' };
   const call = (path, extra) => fetch(CW_API + path, Object.assign({}, base, extra || { keepalive: true })).then(r => r.ok ? r.json() : Promise.reject(r.status));
+  const post = path => { const u = CW_API + path; try { fetch(u, Object.assign({ method: 'POST', keepalive: true }, base)).catch(() => {}); } catch (e) { try { navigator.sendBeacon && navigator.sendBeacon(u); } catch (_) {} } };
   const hit = name => call('/hit/' + CW_NS + '/' + name + '-' + CW_TAG);
   const save = () => { try { localStorage.setItem('cw_dev', JSON.stringify(dev)); } catch (e) {} };
-  const today = cwDay(), rec = () => '/' + CW_NS + '/v-' + CW_TAG + '-' + dev.n;
-  const createRec = () => call('/create' + rec() + '?initializer=' + cwPack(dev.id, dev.f, today, dev.s))
-    .then(d => { if (d && d.admin_key) { dev.k = d.admin_key; save(); } });
+  const today = cwDay(), rec = sfx => '/' + CW_NS + '/' + (sfx ? 'e-' : 'v-') + CW_TAG + '-' + dev.n + (sfx ? '-' + sfx : '');
+  const createRec = () => call('/create' + rec() + '?initializer=' + cwPack(dev.id, dev.f, today, dev.s)).then(d => { if (d && d.admin_key) { dev.k = d.admin_key; save(); } });
   const register = () => hit('uniq').then(d => { if (!(d && d.value > 0)) return; dev.n = d.value; save(); return createRec(); });
-  fetch(COUNTER_HIT, Object.assign({ keepalive: true }, base)).catch(() => {});      // total visits
-  if (!dev || typeof dev.id !== 'number') {                                          // first visit from this device
-    const r = new Uint16Array(1); crypto.getRandomValues(r);
-    dev = { id: r[0], s: 1, f: today }; save();
-    register().catch(() => {});
-    return;
+  const env = cwEnv();
+  /* ---- visit counting (only once per browser session) ---- */
+  if (fresh) {
+    fetch(COUNTER_HIT, Object.assign({ keepalive: true }, base)).catch(() => {});      // total visits
+    if (!dev || typeof dev.id !== 'number') {                                          // first visit from this device
+      const r = new Uint16Array(1); crypto.getRandomValues(r);
+      dev = { id: r[0], s: 1, f: today, tt: 0, lt: 0, P: {}, G: {} }; save();
+      register().catch(() => {});
+    } else {                                                                            // a later session from this device
+      dev.s = (dev.s || 1) + 1; dev.tt = Math.min((dev.tt || 0) + (dev.lt || 0), 16383); dev.lt = 0; save();
+      if (dev.s === 2) hit('back').catch(() => {});
+      hit('repeat').catch(() => {});
+      if (!dev.n) register().catch(() => {});                                           // first-visit registration never finished
+      else if (dev.k) post('/set' + rec() + '?value=' + cwPack(dev.id, dev.f, today, dev.s) + '&token=' + encodeURIComponent(dev.k));
+      else createRec().catch(() => {});
+    }
   }
-  dev.s = (dev.s || 1) + 1; save();                                                   // a later session from this device
-  if (dev.s === 2) hit('back').catch(() => {});
-  hit('repeat').catch(() => {});
-  if (!dev.n) register().catch(() => {});                                             // first-visit registration never finished
-  else if (dev.k) call('/set' + rec() + '?value=' + cwPack(dev.id, dev.f, today, dev.s), { method: 'POST', headers: { Authorization: 'Bearer ' + dev.k } }).catch(() => {});
-  else createRec().catch(() => {});
+  if (!dev || typeof dev.id !== 'number') return;
+  /* ---- anonymous engagement for this visit ---- */
+  dev.P = dev.P || {}; dev.G = dev.G || {}; dev.tt = dev.tt || 0;
+  let V = null; try { V = JSON.parse(sessionStorage.getItem('cw_v') || 'null'); } catch (e) {}
+  if (fresh || !V || V.s !== dev.s) {
+    const now = new Date();
+    V = { s: dev.s, k: null, hr: now.getHours(), wd: now.getDay(), ar: env.ar, t: 0, sc: 0, dz: 0, tb: 0, tg: 0, bq: 0, dp: 0, mp: 0, eg: 0, tap: 0 };
+  }
+  Object.assign(dev.P, { dc: env.dc, os: env.os, br: env.br }); if (!dev.P.ar) dev.P.ar = env.ar;
+  let dirty = true, visT0 = document.visibilityState === 'visible' ? performance.now() : 0;
+  const keep = () => { save(); try { sessionStorage.setItem('cw_v', JSON.stringify(V)); } catch (e) {} };
+  const touch = () => { dirty = true; keep(); };
+  const tickTime = () => { if (visT0) { const now = performance.now(); V.t += (now - visT0) / 1000; visT0 = now; } };
+  const tmBucket = t => t < 10 ? 0 : t < 30 ? 1 : t < 60 ? 2 : t < 120 ? 3 : t < 300 ? 4 : t < 600 ? 5 : 6;
+  const creating = {};
+  function send(sfx, value){
+    const tok = sfx === 'p' ? dev.kp : sfx === 'g' ? dev.kg : V.k;
+    if (tok) return post('/set' + rec(sfx) + '?value=' + value + '&token=' + encodeURIComponent(tok));
+    if (creating[sfx]) return;
+    creating[sfx] = 1;
+    call('/create' + rec(sfx) + '?initializer=' + value).then(d => {
+      if (d && d.admin_key) { if (sfx === 'p') dev.kp = d.admin_key; else if (sfx === 'g') dev.kg = d.admin_key; else V.k = d.admin_key; keep(); }
+    }).catch(() => {}).finally(() => { creating[sfx] = 0; });
+  }
+  function flush(){
+    tickTime(); dev.lt = V.t; keep();
+    if (!dirty || !dev.n) return;
+    try { if (localStorage.getItem('cw_nocount')) return; } catch (e) { return; }
+    dirty = false;
+    dev.P.sc = Math.max(dev.P.sc || 0, V.sc); dev.P.tt = Math.min(dev.tt + V.t, 16383);
+    send('p', cwPackF(CW_P, dev.P));
+    send('g', cwPackF(CW_G, dev.G));
+    send(String(V.s), cwPackF(CW_V, Object.assign({}, V, { tm: tmBucket(V.t) })));
+  }
+  addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); else { visT0 = performance.now(); dirty = true; } });
+  setInterval(() => { if (dirty && document.visibilityState === 'visible') flush(); }, 15000);
+  setInterval(() => { if (document.visibilityState === 'visible') dirty = true; }, 30000);   // keep time-on-page fresh for long visits
+  /* sections reached + max scroll */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; const i = CW_SECS.indexOf(e.target.id); if (i < 0) return;
+      io.unobserve(e.target); const bit = 2 ** i;
+      if (Math.floor((dev.P.sec || 0) / bit) % 2 === 0) dev.P.sec = (dev.P.sec || 0) + bit;
+      V.dz = Math.max(V.dz, i); touch();
+    }), { rootMargin: '0px 0px -25% 0px' });
+    CW_SECS.forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+  }
+  let scPending = false;
+  const scroll = () => { scPending = false; const h = document.documentElement.scrollHeight - innerHeight;
+    const d = h <= 0 ? 10 : Math.min(10, Math.floor((scrollY / h) * 10 + 0.0001)); if (d > V.sc) { V.sc = d; touch(); } };
+  addEventListener('scroll', () => { if (!scPending) { scPending = true; requestAnimationFrame(scroll); } }, { passive: true });
+  /* games + buttons (clicks only; nothing typed is ever read) */
+  const orBit = (o, k, bit) => { if (Math.floor((o[k] || 0) / bit) % 2 === 0) o[k] = (o[k] || 0) + bit; };
+  const tap = bit => { orBit(V, 'tap', bit); orBit(dev.G, 'tap', bit); };
+  document.addEventListener('click', e => {
+    const t = e.target instanceof Element ? e.target : null; if (!t) return;
+    const q = t.closest('#ab-qs .ab-q'); if (q) { V.bq++; dev.G.bq = (dev.G.bq || 0) + 1; }
+    const tt = t.closest('.ttl-opt'); if (tt) { V.tg = dev.G.tg = +tt.dataset.n || 0; }
+    const dt = t.closest('#date-list .date'); if (dt) { V.dp = dev.G.dp = [...document.querySelectorAll('#date-list .date')].indexOf(dt) + 1; }
+    const sp = t.closest('#spot-list .spot'); if (sp) { V.mp = dev.G.mp = [...document.querySelectorAll('#spot-list .spot')].indexOf(sp) + 1; }
+    const mk = t.closest('.leaflet-marker-icon'); if (mk && typeof MAP_SPOTS !== 'undefined') { const i = MAP_SPOTS.findIndex(x => x.name === mk.getAttribute('title')); if (i >= 0) V.mp = dev.G.mp = i + 1; }
+    const a = t.closest('a[href], button');
+    if (a) {
+      const h = a.getAttribute('href') || '';
+      if (h.startsWith('sms:')) {
+        tap(1);
+        orBit(dev.G, 'src', a.closest('#contact-buttons') ? 1 : a.id === 'reach-sms' ? 2 : a.id === 'tot-sms' ? 4 : a.id === 'ttl-sms' ? 8 : a.closest('#date-list') ? 16 : a.closest('.spot-pop') ? 32 : a.closest('#ask-benji') ? 64 : 128);
+      }
+      if (a.id === 'fab-ig' || /instagram\.com/.test(h)) tap(2);
+      if (a.id === 'save-contact') tap(4);
+      if (h.startsWith('tel:')) tap(8);
+    }
+    if (q || tt || dt || sp || mk || a) touch();
+  }, { capture: true, passive: true });
+  const totBox = document.getElementById('tot');
+  if (totBox) new MutationObserver(() => {
+    const sc = parseInt(totBox.dataset.score, 10); if (isNaN(sc) || !totBox.querySelector('.tot-res')) return;
+    V.tb = Math.max(V.tb, sc + 1); dev.G.tb = Math.max(dev.G.tb || 0, sc + 1); dev.G.tp = (dev.G.tp || 0) + 1; touch();
+  }).observe(totBox, { attributes: true, attributeFilter: ['data-score'] });
+  const egg = document.getElementById('egg');
+  if (egg) new MutationObserver(() => { if (egg.classList.contains('open') && !V.eg) { V.eg = 1; dev.G.eg = 1; touch(); } })
+    .observe(egg, { attributes: true, attributeFilter: ['class'] });
+  keep();
 });
 
 /* ---------- Ask Benji ---------- */
