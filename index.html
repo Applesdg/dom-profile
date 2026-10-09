@@ -1203,17 +1203,48 @@ safe('thisOrThat', function(){
   render();
 });
 
-/* ---------- private visit counter ----------
-   Counts one visit per browser session. No cookies, no personal data, nothing shown on the page.
+/* ---------- private visit counters ----------
+   No cookies, no personal data, no fingerprinting, nothing shown on the page.
+   - Total visits: one hit per browser session (unchanged since Oct 7).
+   - Per device: an anonymous random ID in localStorage ('cw_dev') drives "unique visitors", "came back" (2nd session)
+     and "repeat visits" (every session after the first), plus one tiny record per device (short ID, visits, first/last day)
+     that only that device can update (it keeps the record's own key; it can't touch anything else).
    Skips automated browsers (tests/bots) and devices that opted out on the private stats page. */
-const COUNTER_HIT = 'https://abacus.jasoncameron.dev/hit/applesdg-dom-profile/scans-e5d47b2cac';
+const CW_API = 'https://abacus.jasoncameron.dev', CW_NS = 'applesdg-dom-profile', CW_TAG = 'e5d47b2cac';
+const COUNTER_HIT = CW_API + '/hit/' + CW_NS + '/scans-' + CW_TAG;
+const CW_DAY0 = Date.UTC(2026, 0, 1);
+function cwDay(){ const d = new Date(); return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - CW_DAY0) / 864e5); }
+/* record = 16-bit ID, first day, last day (12 bits each, days since 2026-01-01), visits (13 bits): 53 bits, exact in JS */
+function cwPack(id, first, last, visits){ return ((id * 4096 + Math.min(first, 4095)) * 4096 + Math.min(last, 4095)) * 8192 + Math.min(visits, 8191); }
 safe('counter', function(){
   if (navigator.webdriver) return;
+  let dev;
   try {
     if (localStorage.getItem('cw_nocount') || sessionStorage.getItem('cw_counted')) return;
     sessionStorage.setItem('cw_counted', '1');
+    dev = JSON.parse(localStorage.getItem('cw_dev') || 'null');
   } catch (e) { return; }
-  fetch(COUNTER_HIT, { mode: 'cors', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', keepalive: true }).catch(() => {});
+  const base = { mode: 'cors', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' };
+  const call = (path, extra) => fetch(CW_API + path, Object.assign({}, base, extra || { keepalive: true })).then(r => r.ok ? r.json() : Promise.reject(r.status));
+  const hit = name => call('/hit/' + CW_NS + '/' + name + '-' + CW_TAG);
+  const save = () => { try { localStorage.setItem('cw_dev', JSON.stringify(dev)); } catch (e) {} };
+  const today = cwDay(), rec = () => '/' + CW_NS + '/v-' + CW_TAG + '-' + dev.n;
+  const createRec = () => call('/create' + rec() + '?initializer=' + cwPack(dev.id, dev.f, today, dev.s))
+    .then(d => { if (d && d.admin_key) { dev.k = d.admin_key; save(); } });
+  const register = () => hit('uniq').then(d => { if (!(d && d.value > 0)) return; dev.n = d.value; save(); return createRec(); });
+  fetch(COUNTER_HIT, Object.assign({ keepalive: true }, base)).catch(() => {});      // total visits
+  if (!dev || typeof dev.id !== 'number') {                                          // first visit from this device
+    const r = new Uint16Array(1); crypto.getRandomValues(r);
+    dev = { id: r[0], s: 1, f: today }; save();
+    register().catch(() => {});
+    return;
+  }
+  dev.s = (dev.s || 1) + 1; save();                                                   // a later session from this device
+  if (dev.s === 2) hit('back').catch(() => {});
+  hit('repeat').catch(() => {});
+  if (!dev.n) register().catch(() => {});                                             // first-visit registration never finished
+  else if (dev.k) call('/set' + rec() + '?value=' + cwPack(dev.id, dev.f, today, dev.s), { method: 'POST', headers: { Authorization: 'Bearer ' + dev.k } }).catch(() => {});
+  else createRec().catch(() => {});
 });
 
 /* ---------- Ask Benji ---------- */
